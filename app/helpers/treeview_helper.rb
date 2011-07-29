@@ -12,7 +12,7 @@ module TreeviewHelper
       onclick << "toggleIcon('issue-#{issue.id}');"
       issue_class << "close"
     else
-      issue_class << "child-p"
+      issue_class << "child-p" unless issue.parent.nil?
     end
   
     par << "<tr id='issue-#{issue.id}' class='#{issue_class}' #{style} >"
@@ -23,8 +23,8 @@ module TreeviewHelper
               
     query.columns.each do |column|
       if column.name == :subject
-        span = "<span class='treeview'>" + (issue.children.any? ? link_to_remote(".", {}, :onclick => onclick)  : link_to_remote(".")) + "</span>" if issue.children.any? or not issue.parent.nil? 
-        par << content_tag('td', (span.nil? ? "" : span) + column_content(column, issue), :class => column.name, :style => "text-indent: #{node_level(issue)*15}px; ")
+        span = "<span class='treeview'>" + (issue.children.any? ? link_to_remote("-", {}, :onclick => onclick)  :"<p>-</p>") + "</span>" 
+        par << content_tag('td', (span.nil? ? "" : span) + column_content(column, issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px; ")
       else
         par << content_tag('td', column_content(column, issue), :class => column.name)
       end

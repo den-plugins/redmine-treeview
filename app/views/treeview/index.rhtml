@@ -8,10 +8,13 @@
     <%= hidden_field_tag('project_id', @project.to_param) if @project %>
     <fieldset id="filters"><legend><%= l(:label_filter_plural) %></legend>
     <%= render :partial => 'queries/filters', :locals => {:query => @query} %>
+    </fieldset>
+    <%= render :partial => 'queries/columns', :locals => {:query => @query} %>
     <p class="buttons">
     <%= link_to_remote l(:button_apply), 
                        { :url => { :set_filter => 1 },
                          :update => "content",
+                         :before => "selectAllOptions(\"selected_columns\");",
                          :with => "Form.serialize('query_form')"
                        }, :class => 'icon icon-checked' %>
                        
@@ -25,7 +28,6 @@
     <%= link_to l(:button_save), {}, :onclick => "$('query_form').submit(); return false;", :class => 'icon icon-save' %>
     <% end %>
     </p>
-    </fieldset>
     <% end %>
 <% else %>
     <div class="contextual">

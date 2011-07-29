@@ -7,5 +7,5 @@ Redmine::Plugin.register :redmine_treeview do
   version '0.0.1'
   
   permission :treeview, {:treeview => :index}, :public => true
-  menu :project_menu, :treeview, {:controller => 'treeview', :action => 'index'}, :caption => 'Treeview', :param => :project_id
+  menu :project_menu, :treeview, {:controller => 'treeview', :action => 'index'}, :caption => 'User Stories', :param => :project_id
 end

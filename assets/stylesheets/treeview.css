@@ -1,30 +1,27 @@
 tr.child { background-color: #FFFFF1; }
 
 tr.close span.treeview a {
-  display: inline-block;
   background-image: url('../images/plus.png');
-  padding-left: 16px;
-  text-decoration: none;
-  background-repeat: no-repeat;
-  background-position: right top;
 }
 
-tr.open span.treeview a{ 
-  display: inline-block;
+tr.open span.treeview a { 
   background-image: url('../images/minus.png');
+}
+
+tr.child-p span.treeview a, tr.child-p span.treeview p {
+  background-image: url('../images/corner.png');
+}
+
+span.treeview a, span.treeview p {
+  display: inline-block;
+  text-indent:-9999px;
+  outline: 0;
   padding-left: 16px;
   text-decoration: none;
   background-repeat: no-repeat;
   background-position: right top;
 }
 
-tr.child-p span.treeview a {
-  display: inline-block;
-  background-image: url('../images/corner.png');
-  padding-left: 16px;
-  text-decoration: none;
-  background-repeat: no-repeat;
-  background-position: right top;
-}
+span.treeview a:hover, a:active, a:visited { text-decoration: none; outline: 0; }
 
 .subject a { padding-left: 5px; }
