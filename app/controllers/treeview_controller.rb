@@ -63,6 +63,7 @@ class TreeviewController < IssuesController
         @query.project = @project
       end
     end
-    @query.column_names = (params[:column_names] ? params[:column_names] : [:author, :assigned_to, :subject])
+    @query.column_names = (params[:column_names] ? params[:column_names] : (session[:query][:column_names] ? session[:query][:column_names] : [:author, :assigned_to, :subject]))
+    session[:query][:column_names] = @query.column_names
   end
 end
