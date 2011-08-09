@@ -5,3 +5,8 @@ July 29, 2011
   Added Features:
     = default_columns for treeview plugin set to [:author, :assigned_to, :subject]
     = user's ability to filter columns
+    
+August 9, 2011
+  
+  Enhancements:
+    = removed ajax call in showing subtasks, used onclick attribute for img tag instead

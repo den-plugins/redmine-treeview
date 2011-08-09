@@ -23,8 +23,8 @@ module TreeviewHelper
               
     query.columns.each do |column|
       if column.name == :subject
-        span = "<span class='treeview'>" + (issue.children.any? ? link_to_remote("-", {}, :onclick => onclick)  :"<p>-</p>") + "</span>" 
-        par << content_tag('td', (span.nil? ? "" : span) + column_content(column, issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px; ")
+        span = "<span class='treeview'>" + (issue.children.any? ? image_tag('blank.png', :plugin => 'redmine_treeview', :onclick => onclick)  :"<p>-</p>") + "</span>" 
+        par << content_tag('td', (span.nil? ? "" : span) + column_content(column, issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px; width: 700px;")
       else
         par << content_tag('td', column_content(column, issue), :class => column.name)
       end

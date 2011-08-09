@@ -1,18 +1,18 @@
-tr.child { background-color: #FFFFF1; }
+tr.child { background-color: #D6D6CE; }
 
-tr.close span.treeview a {
+tr.close span.treeview img {
   background-image: url('../images/plus.png');
 }
 
-tr.open span.treeview a { 
+tr.open span.treeview img { 
   background-image: url('../images/minus.png');
 }
 
-tr.child-p span.treeview a, tr.child-p span.treeview p {
+tr.child-p span.treeview img, tr.child-p span.treeview p {
   background-image: url('../images/corner.png');
 }
 
-span.treeview a, span.treeview p {
+span.treeview p {
   display: inline-block;
   text-indent:-9999px;
   outline: 0;
