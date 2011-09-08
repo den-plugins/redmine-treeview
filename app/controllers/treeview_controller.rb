@@ -7,6 +7,7 @@ class TreeviewController < IssuesController
     retrieve_query
     sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
     sort_update({'id' => "#{Issue.table_name}.id"}.merge(@query.available_columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
+    feature_task_filter = " AND (trackers.name = 'Feature' OR trackers.name = 'Task')"
     
     if @query.valid?
       limit = per_page_option
@@ -16,11 +17,11 @@ class TreeviewController < IssuesController
         format.csv  { limit = Setting.issues_export_limit.to_i }
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
-      @issue_count = Issue.count(:include => [:status, :project], :conditions => @query.statement)
+      @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + feature_task_filter)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
                            :include => [ :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => @query.statement,
+                           :conditions => @query.statement + feature_task_filter,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
       respond_to do |format|
