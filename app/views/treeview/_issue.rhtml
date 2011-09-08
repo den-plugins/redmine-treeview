@@ -8,7 +8,6 @@
       issue.children.each  {|e| onclick << "toggleSub('issue-#{e.id}');"}
       onclick << "toggleIcon('issue-#{issue.id}');"
       issue_class << "close"
-      @children_count = @children_count + 1
     else
       issue_class << "child-p" unless issue.parent.nil?
     end
