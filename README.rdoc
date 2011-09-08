@@ -10,3 +10,12 @@ August 9, 2011
   
   Enhancements:
     = removed ajax call in showing subtasks, used onclick attribute for img tag instead
+    
+September 8, 2011
+  
+    Fixes:
+      = Sidebar links removed
+      = User Stories page shows only features and tasks
+      = User Stories page bulk_edit now redirects to user stories page rather than issues page
+      = fixed column and filters to avoid overriding the issue & query functions from core
+      

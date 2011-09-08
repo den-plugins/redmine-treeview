@@ -4,7 +4,7 @@ tr.close span.treeview img {
   background-image: url('../images/plus.png');
 }
 
-tr.open span.treeview img { 
+tr.open span.treeview img {
   background-image: url('../images/minus.png');
 }
 
