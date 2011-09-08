@@ -57,10 +57,6 @@
 
 <% end %>
 
-<% content_for :sidebar do %>
-    <%= render :partial => 'issues/sidebar' %>
-<% end %>
-
 <% content_for :header_tags do %>
     <%= auto_discovery_link_tag(:atom, {:query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_issue_plural)) %>
     <%= auto_discovery_link_tag(:atom, {:action => 'changes', :query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_changes_details)) %>
@@ -69,4 +65,4 @@
 <% end %>
 
 <div id="context-menu" style="display: none;"></div>
-<%= javascript_tag "new ContextMenu('#{url_for(:controller => 'issues', :action => 'context_menu')}')" %>
+<%= javascript_tag "new ContextMenu('#{url_for(:controller => 'treeview', :action => 'context_menu')}')" %>
