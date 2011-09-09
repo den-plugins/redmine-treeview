@@ -107,7 +107,7 @@ class TreeviewController < IssuesController
                                                          :total => @issues.size,
                                                          :ids => '#' + unsaved_issue_ids.join(', #'))
       end
-      redirect_to(params[:back_to] || {:controller => 'issues', :action => 'index', :project_id => @project})
+      redirect_to(params[:back_to] || {:controller => 'treeview', :action => 'index', :project_id => @project})
       return
     end
     # Find potential statuses the user could be allowed to switch issues to
