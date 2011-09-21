@@ -7,7 +7,6 @@ class TreeviewController < IssuesController
     retrieve_query
     sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
     sort_update({'id' => "#{Issue.table_name}.id"}.merge(@query.available_columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
-    feature_task_filter = " AND (trackers.name = 'Feature' OR trackers.name = 'Task')"
     
     if @query.valid?
       limit = per_page_option
@@ -17,15 +16,18 @@ class TreeviewController < IssuesController
         format.csv  { limit = Setting.issues_export_limit.to_i }
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
-      @issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement + feature_task_filter).map {|i| i.id if !i.parent.nil?}.compact
-      parents_only = (@issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{@issues_with_parents.join(",")})")
-      @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + feature_task_filter + parents_only)
+      
+      issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement).map {|i| i.id if !i.parent.nil?}.compact
+      parents_only = (issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{issues_with_parents.join(",")})")
+      
+      @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + parents_only)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
                            :include => [ :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => @query.statement + feature_task_filter + parents_only ,
+                           :conditions => @query.statement + parents_only,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
+      
       respond_to do |format|
         format.html { render :template => 'treeview/index.rhtml', :layout => !request.xhr? }
         format.atom { render_feed(@issues, :title => "#{@project || Setting.app_title}: #{l(:label_issue_plural)}") }
@@ -40,7 +42,16 @@ class TreeviewController < IssuesController
     render_404
   end
   
-   def retrieve_query
+  def add_defaults(args)
+    @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
+    if session[:query][:column_names]
+      @query.column_names = session[:query][:column_names]
+    else 
+      @query.column_names = [:tracker, :subject, :assigned_to, :status, :story_points]
+    end
+  end
+  
+  def retrieve_query
     if !params[:query_id].blank?
       cond = "project_id IS NULL"
       cond << " OR project_id = #{@project.id}" if @project
@@ -55,7 +66,7 @@ class TreeviewController < IssuesController
         @query.project = @project
         if params[:fields] and params[:fields].is_a? Array
           params[:fields].each do |field|
-            @query.add_filter(field, params[:operators][field], params[:values][field])
+          @query.add_filter(field, params[:operators][field], params[:values][field])
           end
         else
           @query.available_filters.keys.each do |field|
@@ -69,7 +80,8 @@ class TreeviewController < IssuesController
         @query.project = @project
       end
     end
-    @query.column_names = (params[:column_names] ? params[:column_names] : (session[:query][:column_names] ? session[:query][:column_names] : [:author, :assigned_to, :subject]))
+    add_defaults(params)
+    @query.column_names = params[:column_names] if params[:column_names]
     session[:query][:column_names] = @query.column_names
   end
   

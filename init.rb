@@ -8,7 +8,7 @@ Redmine::Plugin.register :redmine_treeview do
   version '0.0.1'
   
   project_module :issue_tracking do
-    permission :issue_tracking, {:treeview => :index}
+    permission :issue_tracking, {:treeview => :index}, :public => true
   end
   
   menu :project_menu, :treeview, {:controller => 'treeview', :action => 'index'}, :caption => 'User Stories', :param => :project_id
