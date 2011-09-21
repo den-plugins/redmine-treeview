@@ -10,7 +10,7 @@
         <% end %>
 	</tr></thead>
 	<% issues.each do |issue| -%>
-	  <%= render_issue_heirarchy(issue, query) if issue.parent.nil? %>
+	  <%= render :partial => 'treeview/issue', :locals => {:issue => issue, :query => query} if issue.parent.nil? %>
 	<% end -%>
 </table>
 <% end -%>

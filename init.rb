@@ -1,4 +1,5 @@
 require 'redmine'
+require 'custom_issue_patch'
 
 Redmine::Plugin.register :redmine_treeview do
   name 'Redmine Treeview plugin'
