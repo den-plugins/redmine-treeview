@@ -15,9 +15,10 @@ class TreeviewController < IssuesController
       end
       @issue_count = Issue.count(:include => [:status, :project], :conditions => @query.statement)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
+      @issues_with_parents = Issue.find(:all, :include => [:status, :project], :conditions => @query.statement).map {|i| i.id if !i.parent.nil?}.compact
       @issues = Issue.find :all, :order => sort_clause,
                            :include => [ :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => @query.statement,
+                           :conditions => @query.statement + " AND issues.id NOT IN (#{@issues_with_parents.join(",")})",
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
       respond_to do |format|
