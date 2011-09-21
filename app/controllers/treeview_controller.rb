@@ -17,12 +17,13 @@ class TreeviewController < IssuesController
         format.csv  { limit = Setting.issues_export_limit.to_i }
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
-      @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + feature_task_filter)
-      @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement + feature_task_filter).map {|i| i.id if !i.parent.nil?}.compact
+      parents_only = (@issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{@issues_with_parents.join(",")})")
+      @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + feature_task_filter + parents_only)
+      @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
                            :include => [ :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => @query.statement + feature_task_filter + " AND issues.id NOT IN (#{@issues_with_parents.join(",")})",
+                           :conditions => @query.statement + feature_task_filter + parents_only ,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
       respond_to do |format|
