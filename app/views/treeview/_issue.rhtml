@@ -1,22 +1,24 @@
-<% 
-    issue_class = "hascontextmenu #{css_issue_classes(issue)} " + 
+<%
+    filtered_children = issue.children.reject {|c| c unless @issues_with_parents.include?(c.id)}
+    issue_class = "hascontextmenu #{css_issue_classes(issue)} " +
                          (issue.parent ? "issue-#{issue.parent.other_issue(issue).id} child " : " #{cycle('even', 'odd')} " );
     style = issue.parent.nil? ? "" : "style = 'display: none;' ";
     
-    if issue.children.any?
+    if filtered_children.any?
       onclick = ""
-      issue.children.each  {|e| onclick << "toggleSub('issue-#{e.id}');"}
+      filtered_children.each  {|e| onclick << "toggleSub('issue-#{e.id}');"}
       onclick << "toggleIcon('issue-#{issue.id}');"
       issue_class << "close"
     else
       issue_class << "child-p" unless issue.parent.nil?
     end
 %>
+
 <tr id="issue-<%= issue.id %>" class="<%= issue_class %>" <%= style %> >
   <td class='checkbox'>
     <%= check_box_tag('ids[]', issue.id, false, :id => nil) %>
   </td>
-  <td>
+  <td style='overflow: visible'>
     <div class='tooltip'>
       <%= link_to(issue.id, :controller => 'issues', :action => 'show', :id => issue) %>
       <span class='tip'><%= render_issue_tooltip(issue) %><span>
@@ -24,17 +26,17 @@
   </td>
   
   <% query.columns.each do |column| %>
-    <% if column.name == :subject %>
-      <% span = "<span class='treeview'>" + (issue.children.any? ? image_tag('blank.png', :plugin => 'redmine_treeview', :onclick => onclick)  :"<p>-</p>") + "</span>"  %>
-      <%= content_tag('td', (span.nil? ? "" : span) + column_content(column, issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px; width: 700px;") %>
+    <% if column.name.eql?(:subject) %>
+      <% span = "<span class='treeview'>" + (filtered_children.any? ? image_tag('blank.png', :plugin => 'redmine_treeview', :onclick => onclick)  :"<p>-</p>") + "</span>"  %>
+      <%= content_tag('td', (span.nil? ? "" : span) + column_content(column, issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px;") %>
     <% else %>
       <%= content_tag('td', column_content(column, issue), :class => column.name) %>
     <% end %>
   <% end %>
 </tr>
 
-<% if issue.children.any? %>
-  <% issue.children.each do |subtask| %>
+<% if filtered_children.any? %>
+  <% filtered_children.each do |subtask| %>
     <%= render :partial => 'treeview/issue', :locals => {:issue => subtask, :query => query} if subtask.feature? or subtask.task? %>
   <% end %>
 <% end %>

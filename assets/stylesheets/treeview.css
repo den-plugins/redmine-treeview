@@ -1,3 +1,13 @@
+/*table#issueslist {*/
+/*  table-layout: fixed;*/
+/*}*/
+
+table#issueslist  tr td {
+  text-overflow: hidden;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 tr.child { background-color:#edffe8; }
 
 tr.close span.treeview img {

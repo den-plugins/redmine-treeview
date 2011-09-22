@@ -1,6 +1,10 @@
 <% content_tag 'fieldset', :id => 'columns' do %>
-<legend><%= l(:field_column_names) %></legend>
+<legend>
+  <%= l(:field_column_names) %>
+  <%=link_to "(hide/show)", "", :onclick => "$('filter_columns').toggle(); return false;" %>
+</legend>
 
+<div id='filter_columns'>
 <table>
 	<tr>
 		<td><%= select_tag 'available_columns',
@@ -19,6 +23,7 @@
 		</td>
 	</tr>
 </table>
+<span>
 <% end %>
 
 <% content_for :header_tags do %>

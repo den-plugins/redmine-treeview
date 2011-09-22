@@ -17,8 +17,8 @@ class TreeviewController < IssuesController
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
       
-      issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement).map {|i| i.id if !i.parent.nil?}.compact
-      parents_only = (issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{issues_with_parents.join(",")})")
+      @issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement).map {|i| i.id if !i.parent.nil?}.compact
+      parents_only = (@issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{@issues_with_parents.join(",")})")
       
       @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + parents_only)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
@@ -47,7 +47,9 @@ class TreeviewController < IssuesController
     if session[:query][:column_names]
       @query.column_names = session[:query][:column_names]
     else 
-      @query.column_names = [:tracker, :subject, :assigned_to, :status, :story_points]
+      @query.column_names = [:tracker, :subject, :assigned_to, :status]
+      story_points = CustomField.find(:first, :select => 'id', :conditions => "name = 'Story Points'")
+      @query.column_names += ["cf_#{story_points.id}".to_sym] unless story_points.nil?
     end
   end
   
