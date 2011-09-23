@@ -17,8 +17,11 @@ class TreeviewController < IssuesController
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
       
-      @issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement).map {|i| i.id if !i.parent.nil?}.compact
-      parents_only = (@issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{@issues_with_parents.join(",")})")
+      #@issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement).map {|i| i.id if !i.parent.nil?}.compact
+      #parents_only = (@issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{@issues_with_parents.join(",")})")
+      
+      parents_only = " AND NOT EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
+      children_only = " AND EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
       
       @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + parents_only)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
@@ -27,6 +30,8 @@ class TreeviewController < IssuesController
                            :conditions => @query.statement + parents_only,
                            :limit  =>  limit,
                            :offset =>  @issue_pages.current.offset
+
+      @issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement + children_only).collect {|s| s.id }
       
       respond_to do |format|
         format.html { render :template => 'treeview/index.rhtml', :layout => !request.xhr? }
@@ -162,31 +167,6 @@ class TreeviewController < IssuesController
       return
     end
     render :layout => false if request.xhr?
-  end
-  
-  def destroy
-    @hours = TimeEntry.sum(:hours, :conditions => ['issue_id IN (?)', @issues]).to_f
-    if @hours > 0
-      case params[:todo]
-      when 'destroy'
-        # nothing to do
-      when 'nullify'
-        TimeEntry.update_all('issue_id = NULL', ['issue_id IN (?)', @issues])
-      when 'reassign'
-        reassign_to = @project.issues.find_by_id(params[:reassign_to_id])
-        if reassign_to.nil?
-          flash.now[:error] = l(:error_issue_not_found_in_project)
-          return
-        else
-          TimeEntry.update_all("issue_id = #{reassign_to.id}", ['issue_id IN (?)', @issues])
-        end
-      else
-        # display the destroy form
-        return
-      end
-    end
-    @issues.each(&:destroy)
-    redirect_to(params[:back_to] || {:action => 'index', :project_id => @project})
   end
     
   private
