@@ -17,11 +17,13 @@
     <% issues.each do |issue| -%>
       <%= render :partial => 'treeview/issue', :locals => {:issue => issue, :query => query} %>
     <% end -%>
+    <script> stripe('issueslist'); </script>
   </tbody>
 </table>
 <% end -%>
 
 <% content_for :header_tags do %>
   <%= stylesheet_link_tag 'treeview', :plugin => 'redmine_treeview' %>
+  <%= javascript_include_tag 'jquery', :plugin => 'pm_dashboard' %>
   <%= javascript_include_tag 'treeview', :plugin => 'redmine_treeview' %>
 <% end %>

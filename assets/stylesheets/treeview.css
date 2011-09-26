@@ -12,14 +12,17 @@ tr.child { background-color:#edffe8; }
 
 tr.close span.treeview img {
   background-image: url('../images/plus.png');
+  background-repeat: no-repeat;
 }
 
 tr.open span.treeview img {
   background-image: url('../images/minus.png');
+  background-repeat: no-repeat;
 }
 
 tr.child-p span.treeview img, tr.child-p span.treeview p {
   background-image: url('../images/corner.png');
+  background-repeat: no-repeat;
 }
 
 span.treeview p {

@@ -1,14 +1,14 @@
 <%
     filtered_children = issue.children.reject {|c| c unless @issues_with_parents.include?(c.id)}
     @issues_with_parents.delete_if {|c| filtered_children.include?c}
-    issue_class = "hascontextmenu #{css_issue_classes(issue)} " +
-                         (issue.parent ? "issue-#{issue.parent.other_issue(issue).id} child " : " #{cycle('even', 'odd')} " );
+    issue_class = "hascontextmenu #{css_issue_classes(issue)} odd " +
+                         (issue.parent ? "issue-#{issue.parent.other_issue(issue).id} " : "" );
     style = issue.parent.nil? ? "" : "style = 'display: none;' ";
     
     if filtered_children.any?
       onclick = ""
       filtered_children.each  {|e| onclick << "toggleSub('issue-#{e.id}');"}
-      onclick << "toggleIcon('issue-#{issue.id}');"
+      onclick << "toggleIcon('issue-#{issue.id}'); stripe('issueslist'); "
       issue_class << "close"
     else
       issue_class << "child-p" unless issue.parent.nil?

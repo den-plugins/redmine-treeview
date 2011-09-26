@@ -31,3 +31,7 @@ function toggleIcon(issue) {
     el_issue.addClassName('close');
   }
 }
+
+function stripe(tid) {
+  jQuery("#"+tid+" tr:visible").filter(":even").addClass("even").end().filter(":odd").removeClass("even");
+}
