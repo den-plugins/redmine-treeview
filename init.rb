@@ -11,5 +11,5 @@ Redmine::Plugin.register :redmine_treeview do
     permission :issue_tracking, {:treeview => :index}, :public => true
   end
   
-  menu :project_menu, :treeview, {:controller => 'treeview', :action => 'index'}, :caption => 'User Stories', :param => :project_id
+  menu :project_menu, :treeview, {:controller => 'treeview', :action => 'index'}, :after => :backlogs, :caption => 'User Stories', :param => :project_id
 end
