@@ -1,8 +1,8 @@
 <%= render_issue_breadcrumb %>
 
 <% if @query.new_record? %>
-    <h2><%=l(:label_issue_plural)%></h2>
-    <% html_title(l(:label_issue_plural)) %>
+    <h2><%=l(:label_user_story_plural)%></h2>
+    <% html_title(l(:label_user_story_plural)) %>
     
     <% form_tag({ :controller => 'queries', :action => 'new' }, :id => 'query_form') do %>
     <%= hidden_field_tag('project_id', @project.to_param) if @project %>
