@@ -17,9 +17,6 @@ class TreeviewController < IssuesController
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
       
-      #@issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement).map {|i| i.id if !i.parent.nil?}.compact
-      #parents_only = (@issues_with_parents.empty? ? "" : " AND issues.id NOT IN (#{@issues_with_parents.join(",")})")
-      
       parents_only = " AND NOT EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
       children_only = " AND EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
       
@@ -51,8 +48,8 @@ class TreeviewController < IssuesController
     @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
     if session[:query][:column_names]
       @query.column_names = session[:query][:column_names]
-    else 
-      @query.column_names = [:tracker, :subject, :assigned_to, :status]
+    else
+      @query.column_names = [:tracker, :subject, :assigned_to, :status, :fixed_version]
       story_points = CustomField.find(:first, :select => 'id', :conditions => "name = 'Story Points'")
       @query.column_names += ["cf_#{story_points.id}".to_sym] unless story_points.nil?
     end
