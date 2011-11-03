@@ -1,6 +1,10 @@
 <%= render_issue_breadcrumb %>
 
 <% if @query.new_record? %>
+    <p class="contextual">
+      <%= link_to "New Feature", { :controller => 'custom_issues' , :action => 'new', :project_id => @project, :tracker_id => 2, :back_to => @back }, :class => 'icon icon-add' %>
+      <%= link_to "New Task", { :controller => 'custom_issues' , :action => 'new', :project_id => @project, :tracker_id => 4, :back_to => @back }, :class => 'icon icon-add' %>
+    </p>
     <h2><%=l(:label_user_story_plural)%></h2>
     <% html_title(l(:label_user_story_plural)) %>
     

@@ -7,6 +7,7 @@ class TreeviewController < IssuesController
     retrieve_query
     sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
     sort_update({'id' => "#{Issue.table_name}.id"}.merge(@query.available_columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
+    @back = url_for(:controller => 'treeview', :action => 'index')
     
     if @query.valid?
       limit = per_page_option

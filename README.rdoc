@@ -1,21 +1,11 @@
 REDMINE TREEVIEW PLUGIN
 
-July 29, 2011
-
-  Added Features:
-    = default_columns for treeview plugin set to [:author, :assigned_to, :subject]
-    = user's ability to filter columns
-    
-August 9, 2011
+features:
+  = show tree view of features and tasks (collapsible/expandable)
+  = filter issues
+  = select visible columns
+  = default visible columns: tracker, subject, assigned to, status, target version, story points
+  = add new feature/task
   
-  Enhancements:
-    = removed ajax call in showing subtasks, used onclick attribute for img tag instead
-    
-September 8, 2011
-  
-    Fixes:
-      = Sidebar links removed
-      = User Stories page shows only features and tasks
-      = User Stories page bulk_edit now redirects to user stories page rather than issues page
-      = fixed column and filters to avoid overriding the issue & query functions from core
-      
+dependencies:
+  = redmine_custom plugin
