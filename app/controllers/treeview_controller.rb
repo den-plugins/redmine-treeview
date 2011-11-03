@@ -47,10 +47,11 @@ class TreeviewController < IssuesController
   
   def add_defaults(args)
     @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
+    @query.add_filter('fixed_version_id', '*', ['']) unless params[:fields] && params[:fields].include?('fixed_version_id')
     if session[:query][:column_names]
       @query.column_names = session[:query][:column_names]
     else
-      @query.column_names = [:tracker, :subject, :assigned_to, :status, :fixed_version]
+      @query.column_names = [:tracker, :subject, :assigned_to, :status]
       story_points = CustomField.find(:first, :select => 'id', :conditions => "name = 'Story Points'")
       @query.column_names += ["cf_#{story_points.id}".to_sym] unless story_points.nil?
     end
