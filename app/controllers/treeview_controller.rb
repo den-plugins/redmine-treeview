@@ -45,52 +45,6 @@ class TreeviewController < IssuesController
     render_404
   end
   
-  def add_defaults(args)
-    @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
-    @query.add_filter('fixed_version_id', '*', ['']) unless params[:fields] && params[:fields].include?('fixed_version_id')
-    if session[:query][:column_names]
-      @query.column_names = session[:query][:column_names]
-    else
-      @query.column_names = [:tracker, :subject, :assigned_to, :status]
-      story_points = CustomField.find(:first, :select => 'id', :conditions => "name = 'Story Points'")
-      @query.column_names += ["cf_#{story_points.id}".to_sym] unless story_points.nil?
-    end
-  end
-  
-  def retrieve_query
-    if !params[:query_id].blank?
-      cond = "project_id IS NULL"
-      cond << " OR project_id = #{@project.id}" if @project
-      @query = Query.find(params[:query_id], :conditions => cond)
-      @query.project = @project
-      session[:query] = {:id => @query.id, :project_id => @query.project_id}
-      sort_clear
-    else
-      if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
-        # Give it a name, required to be valid
-        @query = Query.new(:name => "_")
-        @query.project = @project
-        if params[:fields] and params[:fields].is_a? Array
-          params[:fields].each do |field|
-          @query.add_filter(field, params[:operators][field], params[:values][field])
-          end
-        else
-          @query.available_filters.keys.each do |field|
-            @query.add_short_filter(field, params[field]) if params[field]
-          end
-        end
-        session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
-      else
-        @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
-        @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
-        @query.project = @project
-      end
-    end
-    add_defaults(params)
-    @query.column_names = params[:column_names] if params[:column_names]
-    session[:query][:column_names] = @query.column_names
-  end
-  
   def bulk_edit
     if request.post?
       status = params[:status_id].blank? ? nil : IssueStatus.find_by_id(params[:status_id])
@@ -172,5 +126,42 @@ class TreeviewController < IssuesController
   def treeview_authorize(action = params[:action])
     allowed = User.current.allowed_to?({:controller => 'issues', :action => action}, @project)
     allowed ? true : deny_access
+  end
+  
+  def add_defaults
+    @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
+    @query.add_filter('fixed_version_id', '*', ['']) if (params[:fields].nil? && params[:set_filter]) || (params[:set_filter].nil? && params[:sort].nil?)
+    if session[:query][:column_names]
+      @query.column_names = session[:query][:column_names]
+    else
+      @query.column_names = [:tracker, :subject, :assigned_to, :status]
+      story_points = CustomField.find(:first, :select => 'id', :conditions => "name = 'Story Points'")
+      @query.column_names += ["cf_#{story_points.id}".to_sym] unless story_points.nil?
+    end
+  end
+  
+  def retrieve_query
+    if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
+      # Give it a name, required to be valid
+      @query = Query.new(:name => "_")
+      @query.project = @project
+      if params[:fields] and params[:fields].is_a? Array
+        params[:fields].each do |field|
+        @query.add_filter(field, params[:operators][field], params[:values][field])
+        end
+      else
+        @query.available_filters.keys.each do |field|
+          @query.add_short_filter(field, params[field]) if params[field]
+        end
+      end
+      session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
+    else
+      @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
+      @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
+      @query.project = @project
+    end
+    add_defaults
+    @query.column_names = params[:column_names] if params[:column_names]
+    session[:query][:column_names] = @query.column_names
   end
 end
