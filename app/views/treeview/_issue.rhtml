@@ -4,7 +4,7 @@
     issue_class = "hascontextmenu #{css_issue_classes(issue)} odd " +
                          (issue.parent ? "issue-#{issue.parent.other_issue(issue).id} " : "" );
     style = issue.parent.nil? ? "" : "style = 'display: none;' ";
-    
+
     if filtered_children.any?
       onclick = ""
       filtered_children.each  {|e| onclick << "toggleSub('issue-#{e.id}');"}
@@ -21,7 +21,7 @@
   </td>
   <td style='overflow: visible'>
     <div class='tooltip'>
-      <%= link_to(issue.id, :controller => 'issues', :action => 'show', :id => issue) %>
+      <%= link_to(issue.id, :controller => 'treeview', :action => 'show', :id => issue) %>
       <span class='tip'><%= render_issue_tooltip(issue) %><span>
     </div>
   </td>
@@ -29,7 +29,7 @@
   <% query.columns.each do |column| %>
     <% if column.name.eql?(:subject) %>
       <% span = "<span class='treeview'>" + (filtered_children.any? ? image_tag('blank.png', :plugin => 'redmine_treeview', :onclick => onclick)  :"<p>-</p>") + "</span>"  %>
-      <%= content_tag('td', (span.nil? ? "" : span) + column_content(column, issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px;") %>
+      <%= content_tag('td', (span.nil? ? "" : span) + column_content_subject(issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px;") %>
     <% else %>
       <%= content_tag('td', column_content(column, issue), :class => column.name) %>
     <% end %>
