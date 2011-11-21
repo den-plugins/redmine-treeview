@@ -20,7 +20,6 @@ class TreeviewController < IssuesController
       
       parents_only = " AND NOT EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
       children_only = " AND EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
-      
       @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + parents_only)
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       @issues = Issue.find :all, :order => sort_clause,
@@ -130,7 +129,9 @@ class TreeviewController < IssuesController
   
   def add_defaults
     @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
-    @query.add_filter('fixed_version_id', '*', ['']) if (params[:fields].nil? && params[:set_filter]) || (params[:set_filter].nil? && params[:sort].nil?)
+    if session[:fv_ctr].nil?
+     @query.add_filter('fixed_version_id', '*', ['']) if (params[:fields].nil? && params[:set_filter]) || (params[:set_filter].nil? && params[:sort].nil?)
+    end
     if session[:query][:column_names]
       @query.column_names = session[:query][:column_names]
     else
@@ -147,7 +148,8 @@ class TreeviewController < IssuesController
       @query.project = @project
       if params[:fields] and params[:fields].is_a? Array
         params[:fields].each do |field|
-        @query.add_filter(field, params[:operators][field], params[:values][field])
+          @query.add_filter(field, params[:operators][field], params[:values][field])
+          session[:fv_ctr] = 1 if field == "fixed_version_id"
         end
       else
         @query.available_filters.keys.each do |field|
