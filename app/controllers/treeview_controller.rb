@@ -1,7 +1,7 @@
 class TreeviewController < IssuesController
 
-  skip_filter :authorize, :only => [:edit, :bulk_edit, :move, :destroy]
-  before_filter :treeview_authorize, :only => [:edit, :bulk_edit, :move, :destroy]
+  skip_filter :authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy]
+  before_filter :treeview_authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy]
 
   def index
     retrieve_query
@@ -42,6 +42,37 @@ class TreeviewController < IssuesController
     end
   rescue ActiveRecord::RecordNotFound
     render_404
+  end
+  
+  def show
+    @journals = @issue.journals.find(:all, :include => [:user, :details], :order => "#{Journal.table_name}.created_on ASC")
+    @journals.each_with_index {|j,i| j.indice = i+1}
+    @journals.reverse! if User.current.wants_comments_in_reverse_order?
+    @changesets = @issue.changesets
+    @changesets.reverse! if User.current.wants_comments_in_reverse_order?
+    @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+    @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
+    @logtime_allowed = TimeEntry.logtime_allowed?(User.current, @project)
+    @priorities = Enumeration.priorities
+    @accounting = Enumeration.accounting_types
+    @default = @issue.accounting.id
+    @time_entry = TimeEntry.new
+    @update_options = {'Internal (DEN only)' => 1, 'Include Mystic' => 2}
+    @treeview_index = "#{root_url}stories/#{@project.identifier}"
+
+		# for feature #8364
+		issues = @project.issues.collect {|pi| pi.id}.sort
+		index = issues.index(@issue.id)
+		if !index.nil?
+			prv_issue = (index-1 >= 0) ? issues[index-1] : 0
+			nxt_issue = (index+1 < issues.size) ? issues[index+1] : 0
+		end
+		#
+    respond_to do |format|
+      format.html { render :template => 'treeview/show.rhtml', :locals => {:prv => prv_issue, :nxt => nxt_issue} } # for feature #8364 - added locals
+      format.atom { render :action => 'changes', :layout => false, :content_type => 'application/atom+xml' }
+      format.pdf  { send_data(issue_to_pdf(@issue), :type => 'application/pdf', :filename => "#{@project.identifier}-#{@issue.id}.pdf") }
+    end
   end
   
   def bulk_edit
