@@ -1,21 +1,6 @@
-<%
-    filtered_children = issue.children.reject {|c| c unless @issues_with_parents.include?(c.id)}
-    @issues_with_parents.delete_if {|c| filtered_children.include?c}
-    issue_class = "hascontextmenu #{css_issue_classes(issue)} odd " +
-                         (issue.parent ? "issue-#{issue.parent.other_issue(issue).id} " : "" );
-    style = issue.parent.nil? ? "" : "style = 'display: none;' ";
+<% filtered_children = issue.children.reject {|c| c unless @child_issues.include?(c)} %>
 
-    if filtered_children.any?
-      onclick = ""
-      filtered_children.each  {|e| onclick << "toggleSub('issue-#{e.id}');"}
-      onclick << "toggleIcon('issue-#{issue.id}'); stripe('issueslist'); "
-      issue_class << "close"
-    else
-      issue_class << "child-p" unless issue.parent.nil?
-    end
-%>
-
-<tr id="issue-<%= issue.id %>" class="<%= issue_class %>" <%= style %> >
+<tr id="issue-<%= issue.id %>" class="<%= issue_class issue, filtered_children %>" style="<%= issue_style issue %>">
   <td class='checkbox'>
     <%= check_box_tag('ids[]', issue.id, false, :id => nil) %>
   </td>
@@ -27,12 +12,7 @@
   </td>
   
   <% query.columns.each do |column| %>
-    <% if column.name.eql?(:subject) %>
-      <% span = "<span class='treeview'>" + (filtered_children.any? ? image_tag('blank.png', :plugin => 'redmine_treeview', :onclick => onclick)  :"<p>-</p>") + "</span>"  %>
-      <%= content_tag('td', (span.nil? ? "" : span) + column_content_subject(issue), :class => column.name, :style => "text-indent: #{node_level(issue)*25}px;") %>
-    <% else %>
-      <%= content_tag('td', column_content(column, issue), :class => column.name) %>
-    <% end %>
+    <%= display_column_details issue, filtered_children, column %>
   <% end %>
 </tr>
 

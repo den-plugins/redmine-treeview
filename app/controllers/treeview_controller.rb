@@ -18,18 +18,26 @@ class TreeviewController < IssuesController
         format.pdf  { limit = Setting.issues_export_limit.to_i }
       end
       
-      parents_only = " AND NOT EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
-      children_only = " AND EXISTS (SELECT issue_to_id FROM issue_relations where issue_relations.issue_to_id = issues.id AND issue_relations.relation_type='subtasks')"
-      @issue_count = Issue.count(:include => [:status, :project, :tracker], :conditions => @query.statement + parents_only)
-      @issue_pages = Paginator.new self, @issue_count, limit, params['page']
-      @issues = Issue.find :all, :order => sort_clause,
-                           :include => [ :assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version ],
-                           :conditions => @query.statement + parents_only,
-                           :limit  =>  limit,
-                           :offset =>  @issue_pages.current.offset
-
-      @issues_with_parents = Issue.find(:all, :include => [:status, :project, :tracker], :conditions => @query.statement + children_only).collect {|s| s.id }
+      @tmp_issues = Issue.find :all, :order => sort_clause,
+                                     :include => [:assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version],
+                                     :conditions => @query.statement
       
+      @issues, @child_issues = [], []
+      @filtered_issues = @tmp_issues.reject do |issue|
+        @child_issues << issue if issue.has_parent?
+        issue if (issue.has_parent? and @tmp_issues.include?(issue.parent_issue))
+      end
+      @child_issues.delete_if {|c| @filtered_issues.include? c}
+      @child_issues_clone = @child_issues
+      
+      @issue_count = @filtered_issues.count
+      @issue_pages = Paginator.new self, @issue_count, limit, params['page']
+      offset = @issue_pages.current.offset
+      (offset ... (offset + limit)).each do |i|
+        break if @filtered_issues[i].nil?
+       @issues << @filtered_issues[i]
+      end
+
       respond_to do |format|
         format.html { render :template => 'treeview/index.rhtml', :layout => !request.xhr? }
         format.atom { render_feed(@issues, :title => "#{@project || Setting.app_title}: #{l(:label_issue_plural)}") }
