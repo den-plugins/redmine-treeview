@@ -3,7 +3,7 @@
 
 <div class="contextual">
 <%= credit_rollback_link @issue %>
-<%= link_to_if_authorized(l(:button_update), {:controller => 'issues', :action => 'edit', :id => @issue }, :onclick => "showAndScrollTo('update', 'notes'); return false;", :class => 'icon icon-edit', :accesskey => accesskey(:edit)) %>
+<%= link_to(l(:button_update), {:controller => 'treeview', :action => 'edit', :id => @issue }, :onclick => "showAndScrollTo('update', 'notes'); return false;", :class => 'icon icon-edit', :accesskey => accesskey(:edit)) if authorize_for('issues', 'edit') %>
 <%#= link_to_if_authorized l(:button_log_time), {:controller => 'timelog', :action => 'edit', :issue_id => @issue}, :class => 'icon icon-time-add' %>
 <%= if !User.current.memberships.nil?
 	link_to l(:button_log_time), {:controller => 'timelog', :action => 'edit', :issue_id => @issue}, :class => 'icon icon-time-add' if @logtime_allowed and authorize_for('timelog', 'edit')
@@ -11,9 +11,9 @@ else
 	link_to_if_authorized l(:button_log_time), {:controller => 'timelog', :action => 'edit', :issue_id => @issue}, :class => 'icon icon-time-add'
 end %>
 <%= watcher_tag(@issue, User.current) %>
-<%= link_to_if_authorized l(:button_copy), {:controller => 'issues', :action => 'new', :project_id => @project, :copy_from => @issue }, :class => 'icon icon-copy' %>
-<%= link_to_if_authorized l(:button_move), {:controller => 'issues', :action => 'move', :id => @issue }, :class => 'icon icon-move' %>
-<%= link_to_if_authorized l(:button_delete), {:controller => 'issues', :action => 'destroy', :id => @issue}, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-del' %><br />
+<%= link_to l(:button_copy), {:controller => 'treeview', :action => 'new', :project_id => @project, :copy_from => @issue }, :class => 'icon icon-copy' if authorize_for('issues', 'new') %>
+<%= link_to l(:button_move), {:controller => 'treeview', :action => 'move', :id => @issue }, :class => 'icon icon-move' if authorize_for('issues', 'move') %>
+<%= link_to l(:button_delete), {:controller => 'treeview', :action => 'destroy', :id => @issue}, :confirm => l(:text_are_you_sure), :method => :post, :class => 'icon icon-del' if authorize_for('issues', 'destroy') %><br />
 </div>
 
 <h2><%= @issue.tracker.name %> #<%= @issue.id %></h2>
@@ -23,14 +23,14 @@ end %>
 	<tr>
 		<td align="left" width="30%">
 			<% if prv!=0 %>
-				<%= link_to(l(:label_previous_issue), {:controller => 'issues', :action => 'show', :id => prv}) %>
-			<% end %>	
+				<%= link_to(l(:label_previous_issue), {:controller => 'treeview', :action => 'show', :id => prv}) %>
+			<% end %>
 		</td>
 		<td align="right" width="30%">
 			<% if nxt!=0 %>
-				<%= link_to(l(:label_next_issue), {:controller => 'issues', :action => 'show', :id => nxt}) %>
+				<%= link_to(l(:label_next_issue), {:controller => 'treeview', :action => 'show', :id => nxt}) %>
 			<% end %>
-		</td>	
+		</td>
 	</tr>
 </table>
 
@@ -142,7 +142,7 @@ end %>
 <% if authorize_for('issues', 'edit') %>
   <div id="update" style="display:none;">
   <h3><%= l(:button_update) %></h3>
-  <%= render :partial => 'issues/edit' %>
+  <%= render :partial => 'edit' %>
   </div>
 <% end %>
 
