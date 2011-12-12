@@ -6,7 +6,7 @@
 	<a href="#" class="submenu" onclick="return false;"><%= l(:label_sort_by,'') %></a>
 	<ul>
 	<% @sorting_options.each do |s,v| -%>
-	    <li><%= link_to_remote s,:url=>{:controller => 'issues', :action => 'sort_by',
+	    <li><%= link_to_remote s,:url=>{:controller => 'treeview', :action => 'sort_by',
                                                   :update_to => @partial_name,
                                                   :partial_fullpath => @partial_fullpath,
                                                   :sort_key => v[:sort_key],
@@ -17,7 +17,7 @@
   <% end %>
 
 <% if !@issue.nil? -%>
-	<li><%= context_menu_link l(:button_edit), {:controller => 'issues', :action => 'edit', :id => @issue, :back_to => @back},
+	<li><%= context_menu_link l(:button_edit), {:controller => 'treeview', :action => 'edit', :id => @issue, :back_to => @back},
 	        :class => 'icon-edit', :disabled => !@can[:edit] %></li>
 	<li class="folder">
 		<a href="#" class="submenu" onclick="return false;"><%= l(:field_status) %></a>
@@ -101,7 +101,7 @@
 	</li>
 	
 <% if !@issue.nil? %>
-	<li><%= context_menu_link l(:button_copy), {:controller => 'issues', :action => 'new', :project_id => @project, :copy_from => @issue},
+	<li><%= context_menu_link l(:button_copy), {:controller => 'treeview', :action => 'new', :project_id => @project, :copy_from => @issue},
 	        :class => 'icon-copy', :disabled => !@can[:copy] %></li>
 	<% if @can[:log_time] -%>
 	<li><%= context_menu_link l(:button_log_time), {:controller => 'timelog', :action => 'edit', :issue_id => @issue},

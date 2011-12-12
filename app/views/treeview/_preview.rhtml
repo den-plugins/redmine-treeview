@@ -1,0 +1,18 @@
+<fieldset class="preview"><legend><%= l(:label_preview) %></legend>
+  <strong><label for="description">Description</label></strong>
+    <div style="border:1px solid black;overflow:hidden;">
+	  <%= textilizable @text %>
+	</div>
+  <% if authorize_for('timelog', 'edit') && !params[:time_entry][:comments].empty? %>
+    <strong><label for="comment">Comment</label></strong>
+    <div style="border:1px solid black;overflow:hidden;">
+	  <%= textilizable params[:time_entry][:comments] %>
+	</div>
+  <% end %>
+  <% if !params[:notes].empty? %>
+    <strong><label for="notes">Notes</label></strong>
+    <div style="border:1px solid black;overflow:hidden;">
+      <%= textilizable params[:notes] %>
+    </div>
+  <% end %>
+</fieldset>
