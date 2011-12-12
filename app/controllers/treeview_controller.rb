@@ -34,9 +34,10 @@ class TreeviewController < IssuesController
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       offset = @issue_pages.current.offset
       (offset ... (offset + limit)).each do |i|
-        break if @filtered_issues[i].nil?
-		if params[:set_filter] || session[:query]
-       @issues << @filtered_issues[i]
+       break if @filtered_issues[i].nil?
+	   	if params[:set_filter] || session[:not_first_load]
+      	 	@issues << @filtered_issues[i]
+			session[:not_first_load] = "yes"
 		end
       end
 
