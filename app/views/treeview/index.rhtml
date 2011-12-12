@@ -70,3 +70,9 @@
 
 <div id="context-menu" style="display: none;"></div>
 <%= javascript_tag "new ContextMenu('#{url_for(:controller => 'treeview', :action => 'context_menu')}')" %>
+
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'treeview', :plugin => 'redmine_treeview' %>
+  <%= javascript_include_tag 'jquery', :plugin => 'pm_dashboard' %>
+  <%= javascript_include_tag 'treeview', :plugin => 'redmine_treeview' %>
+<% end %>

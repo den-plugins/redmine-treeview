@@ -339,9 +339,7 @@ class TreeviewController < IssuesController
   end
   
   def retrieve_query
-	puts "-------------#{params[:set_filter].to_s}------#{session[:query][:project_id] != (@project ? @project.id : nil)}----------------#{session[:query][:project_id].to_s}-----------#{session[:query].nil?}-------------------------------------"
     if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
-		puts "------------------------"
       # Give it a name, required to be valid
       @query = Query.new(:name => "_")
       @query.project = @project
@@ -357,7 +355,6 @@ class TreeviewController < IssuesController
       end
       session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
     else
-		puts "------------------------s"
       @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
       @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
       @query.add_filter('fixed_version_id', '*', ['']) unless session[:query][:filters] && session[:query][:filters]["fixed_version_id"]
