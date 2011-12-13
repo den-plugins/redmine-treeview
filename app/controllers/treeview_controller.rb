@@ -352,13 +352,15 @@ class TreeviewController < IssuesController
         @query.available_filters.keys.each do |field|
           @query.add_short_filter(field, params[field]) if params[field]
         end
-        @query.add_filter('fixed_version_id', '*', [''])
+        @query.add_filter('fixed_version_id', '=', [''])
+        @query.add_filter('status_id', '*', [''])
       end
       session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
     else
       @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
       @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
-      @query.add_filter('fixed_version_id', '*', ['']) unless session[:query][:filters] && session[:query][:filters]["fixed_version_id"]
+      @query.add_filter('fixed_version_id', '=', ['']) unless session[:query][:filters] && session[:query][:filters]["fixed_version_id"]
+      @query.add_filter('status_id', '*', ['']) unless session[:query][:filters] && session[:query][:filters]["status_id"]
       @query.project = @project
     end
     add_defaults

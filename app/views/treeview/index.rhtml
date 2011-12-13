@@ -44,17 +44,17 @@
     <div id="query_form"></div>
     <% html_title @query.name %>
 <% end %>
-<%= error_messages_for 'query' %>
 <% if @query.valid? %>
-<% if @issues %>
-<% if @issues.empty? %>
-<p class="nodata"><%= l(:label_no_data) %></p>
+	<%= error_messages_for 'query' %>
+	<% if @issues %>
+	<% if @issues.empty? %>
+		<p class="nodata"><%= l(:label_no_data) %></p>
+	<% else %>
+		<%= render :partial => 'treeview/list', :locals => {:issues => @issues, :query => @query} %>
+		<p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
+	<% end %>
 <% else %>
-<%= render :partial => 'treeview/list', :locals => {:issues => @issues, :query => @query} %>
-<p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
-<% end %>
-<% else %>
-<p class="nodata"><%= l(:label_no_data) %></p>
+	<p class="nodata"><%= l(:label_no_data) %></p>
 <% end %>
 <% other_formats_links do |f| %>
 	<%= f.link_to 'Atom', :url => { :project_id => @project, :query_id => (@query.new_record? ? nil : @query), :key => User.current.rss_key } %>
