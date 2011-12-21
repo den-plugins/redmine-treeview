@@ -329,9 +329,9 @@ class TreeviewController < IssuesController
   
   def add_defaults
     @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
-#   @query.add_filter('fixed_version_id', '*', ['']) if (params[:fields].nil? && params[:set_filter]) || (params[:set_filter].nil? && params[:sort].nil?)
-    if session[:query][:column_names]
-      @query.column_names = session[:query][:column_names]
+    #@query.add_filter('fixed_version_id', '*', ['']) if (params[:fields].nil? && params[:set_filter]) || (params[:set_filter].nil? && params[:sort].nil?)
+    if session[:us_query][:column_names]
+      @query.column_names = session[:us_query][:column_names]
     else
       @query.column_names = [:tracker, :subject, :assigned_to, :status]
       story_points = CustomField.find(:first, :select => 'id', :conditions => "name = 'Story Points'")
@@ -340,7 +340,7 @@ class TreeviewController < IssuesController
   end
   
   def retrieve_query
-    if params[:set_filter] || session[:query].nil? || session[:query][:project_id] != (@project ? @project.id : nil)
+    if params[:set_filter] || session[:us_query].nil? || session[:us_query][:project_id] != (@project ? @project.id : nil)
       # Give it a name, required to be valid
       @query = Query.new(:name => "_")
       @query.project = @project
@@ -355,16 +355,16 @@ class TreeviewController < IssuesController
         @query.add_filter('fixed_version_id', '=', [''])
         @query.add_filter('status_id', '*', [''])
       end
-      session[:query] = {:project_id => @query.project_id, :filters => @query.filters}
+      session[:us_query] = {:project_id => @query.project_id, :filters => @query.filters}
     else
-      @query = Query.find_by_id(session[:query][:id]) if session[:query][:id]
-      @query ||= Query.new(:name => "_", :project => @project, :filters => session[:query][:filters])
-      @query.add_filter('fixed_version_id', '=', ['']) unless session[:query][:filters] && session[:query][:filters]["fixed_version_id"]
-      @query.add_filter('status_id', '*', ['']) unless session[:query][:filters] && session[:query][:filters]["status_id"]
+      @query = Query.find_by_id(session[:us_query][:id]) if session[:us_query][:id]
+      @query ||= Query.new(:name => "_", :project => @project, :filters => session[:us_query][:filters])
+      @query.add_filter('fixed_version_id', '=', ['']) unless session[:us_query][:filters] && session[:us_query][:filters]["fixed_version_id"]
+      @query.add_filter('status_id', '*', ['']) unless session[:us_query][:filters] && session[:us_query][:filters]["status_id"]
       @query.project = @project
     end
     add_defaults
     @query.column_names = params[:column_names] if params[:column_names]
-    session[:query][:column_names] = @query.column_names
+    session[:us_query][:column_names] = @query.column_names
   end
 end
