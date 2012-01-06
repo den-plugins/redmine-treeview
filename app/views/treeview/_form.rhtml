@@ -18,6 +18,7 @@
 <div class="attributes">
 <div class="splitcontentleft">
 <% if @issue.new_record? || @allowed_statuses.any? %>
+<% @allowed_statuses = !@issue.tracker_id.eql?(1) ? (@allowed_statuses - @issue.bug_feature_status_diff) : @allowed_statuses %>
 <p><%= f.select :status_id, (@allowed_statuses.collect {|p| [p.name, p.id]}), :required => true %></p>
 <% else %>
 <p><label><%= l(:field_status) %></label> <%= @issue.status.name %></p>
@@ -33,19 +34,30 @@
                      {:controller => 'projects', :action => 'add_issue_category', :id => @project},
                      :class => 'small', :tabindex => 199) if authorize_for('projects', 'add_issue_category') %></p>
 <% end %>
-<%= content_tag('p', f.select(:fixed_version_id, 
-                              (@project.versions.sort.collect {|v| [v.name, v.id]}),
+<% fv = !@issue.fixed_version_id.nil? ? @project.versions.find(:first, :conditions => ["versions.id = ? AND versions.state = ?", @issue.fixed_version_id, 3]) : nil%>
+<% get_incomplete = @project.versions.reject.each {|v| v if v.state==3}%>
+<%= content_tag('p', f.select(:fixed_version_id,
+                              (get_incomplete.sort.collect {|v| [v.name, v.id]} << (fv ? [fv.name,fv.id] : nil)).compact,
                               { :include_blank => true })) unless @project.versions.empty? %>
-<%= content_tag('p', f.select(:affects_version_id, 
-                              (@project.versions.sort.collect {|v| [v.name, v.id]}),
+<% if @issue.bug? %>
+<%= content_tag('p', f.select(:affects_version_id,
+                              (@project.versions.affectable.collect {|v| [v.name, v.id]}),
                               { :include_blank => true })) unless @project.versions.empty? %>
-
+<% end %>
 </div>
 
 <div class="splitcontentright">
 <p><%= f.text_field :start_date, :size => 10 %><%= calendar_for('issue_start_date') %></p>
 <p><%= f.text_field :due_date, :size => 10 %><%= calendar_for('issue_due_date') %></p>
-<p><%= f.text_field :estimated_hours, :size => 3 %> <%= l(:field_hours) %></p>
+<% if !@issue.feature? %>
+ <% if (@issue.task? && @issue.children.size < 1) || (!@issue.task?) %>
+    <p><%= f.text_field :estimated_hours, :size => 3 %> <%= l(:field_sp_hours) %></p>
+    <p><%= f.text_field :remaining_effort, :size => 3, :readonly => (@issue.closed? ? true : false ) %> <%= l(:field_sp_hours) %></p>
+ <% elsif @issue.task? && @issue.children.size > 0 %>
+    <%= f.hidden_field :estimated_hours, :size => 3, :value => 0 %>
+    <%= f.hidden_field :remaining_effort, :size => 3, :value => 0,:readonly => (@issue.closed? ? true : false ) %>
+ <% end %>
+<% end %>
 <p><%= f.select :done_ratio, ((0..10).to_a.collect {|r| ["#{r*10} %", r*10] }) %></p>
 </div>
 
@@ -53,9 +65,22 @@
 <%= render :partial => 'form_custom_fields' %>
 </div>
 
-<% if @issue.new_record? %>
+<%# if @issue.new_record? %>
 <p><label><%=l(:label_attachment_plural)%></label><%= render :partial => 'attachments/form' %></p>
-<% end %>
+<p>
+  <% if (params[:issue] and params[:issue][:tracker_id] == "2") or params[:tracker_id] == "2" or @issue.feature? %>
+    <% predef_tasks = @issue.predef_tasks %>
+    <% if !@issue.new_record? %>
+      <% existing_predef_tasks = @issue.children.map {|c| c.subject.split("-").first.strip if predef_tasks.member?(c.subject.split("-").first.strip)}.compact %>
+      <% predef_tasks = predef_tasks - existing_predef_tasks %>
+    <% end %>
+    <label><%= l(:label_predefined_tasks) if !predef_tasks.empty? %></label>
+    <% predef_tasks.each do |ptask| %>
+      <label class="floating"><%= check_box_tag 'issue[predefined_tasks][]', ptask %> <%=h ptask %></label>
+    <% end %>
+  <% end %>
+</p>
+<%# end %>
 
 <% if @issue.new_record? && User.current.allowed_to?(:add_issue_watchers, @project) -%>
 <p><label><%= l(:label_issue_watchers) %></label>
