@@ -1,4 +1,5 @@
 require 'redmine'
+require 'remaining_effort_entry'
 require 'custom_issue_patch'
 
 Redmine::Plugin.register :redmine_treeview do
