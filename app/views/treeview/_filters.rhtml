@@ -60,6 +60,10 @@ function toggle_multi_select(field) {
 <tr>
 <td>
 <table>
+  <tr style="display: block; padding-bottom: 3px;">
+    <td><%= check_box_tag 'include_bugs', "1", (session[:us_query][:include_bugs] ? true : false) %>
+    <label for="include_bugs">Include Bugs</label></td>
+  </tr>
 <% q = query.available_filters.delete_if {|k, v| k.eql? "tracker_id"} %>
 <% q.sort{|a,b| a[1][:order]<=>b[1][:order]}.each do |filter| %>
     <% field = filter[0]

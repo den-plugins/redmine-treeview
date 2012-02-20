@@ -328,8 +328,9 @@ class TreeviewController < IssuesController
   end
   
   def add_defaults
-    @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => "name = 'Feature' or name = 'Task'").collect {|c| c.id.to_s}
-    #@query.add_filter('fixed_version_id', '*', ['']) if (params[:fields].nil? && params[:set_filter]) || (params[:set_filter].nil? && params[:sort].nil?)
+    tracker_condition    = "name='Feature' or name='Task'"
+    tracker_condition += " or name='Bug'" if params[:include_bugs] || session[:us_query][:include_bugs]
+    @query.add_filter 'tracker_id', '=', Tracker.find(:all, :select => :id, :conditions => tracker_condition).collect {|c| c.id.to_s}
     if session[:us_query][:column_names]
       @query.column_names = session[:us_query][:column_names]
     else
@@ -355,7 +356,7 @@ class TreeviewController < IssuesController
         @query.add_filter('fixed_version_id', '=', [''])
         @query.add_filter('status_id', '*', [''])
       end
-      session[:us_query] = {:project_id => @query.project_id, :filters => @query.filters}
+      session[:us_query] = {:project_id => @query.project_id, :filters => @query.filters, :include_bugs => params[:include_bugs]}
     else
       @query = Query.find_by_id(session[:us_query][:id]) if session[:us_query][:id]
       @query ||= Query.new(:name => "_", :project => @project, :filters => session[:us_query][:filters])

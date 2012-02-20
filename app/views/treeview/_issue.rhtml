@@ -18,6 +18,6 @@
 
 <% if filtered_children.any? %>
   <% filtered_children.each do |subtask| %>
-    <%= render :partial => 'treeview/issue', :locals => {:issue => subtask, :query => query} if subtask.feature? or subtask.task? %>
+    <%= render :partial => 'treeview/issue', :locals => {:issue => subtask, :query => query} if subtask.feature? or subtask.task? or subtask.bug? %>
   <% end %>
 <% end %>
