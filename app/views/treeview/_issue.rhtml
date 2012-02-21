@@ -1,6 +1,6 @@
 <% filtered_children = issue.children.reject {|c| c unless @child_issues.include?(c)} %>
 
-<tr id="issue-<%= issue.id %>" class="<%= issue_class issue, filtered_children %>" style="<%= issue_style issue %>">
+<tr id="issue-<%= issue.id %>" class="<%= issue_class issue, filtered_children %>">
   <td class='checkbox'>
     <%= check_box_tag('ids[]', issue.id, false, :id => nil) %>
   </td>
@@ -10,9 +10,8 @@
       <span class='tip'><%= render_issue_tooltip(issue) %><span>
     </div>
   </td>
-  
   <% query.columns.each do |column| %>
-    <%= display_column_details issue, filtered_children, column %>
+    <%= content_tag('td', column_content(column, issue), :class => column.name) %>
   <% end %>
 </tr>
 

@@ -1,37 +1,15 @@
-function toggleSub(issue) {
-  var el_issue = document.getElementById(issue);
-  el_issue.style.display = el_issue.style.display == 'none' ? '' : 'none'
-  if (el_issue.style.display == 'none') {
-    hideSub(issue);
-  }
-  document.close();
+j=jQuery.noConflict();
+function stripe(tid){
+  jQuery("#"+tid+" tbody tr.issue:visible").filter(":even").addClass("even").end().filter(":odd").removeClass("even");
 }
 
-function hideSub(id) {
-  var el_group = document.getElementsByClassName(id);
-  var el_parent = document.getElementById(id);
-  if (el_parent.hasClassName('open')) {
-    el_parent.removeClassName('open');
-    el_parent.addClassName('close');
+function toggleAll(tid) {
+  var table = jQuery("#"+tid);
+  if (table.hasClass("collapsed")) {
+    table.removeClass("collapsed").addClass("expanded");
+    jQuery("#"+tid+" tr").filter(":parent").each(function() { jQuery(this).expand();});
+  }else{
+    table.removeClass("expanded").addClass("collapsed");
+    jQuery("#"+tid+" tr").filter(":parent").each(function() { jQuery(this).collapse();});
   }
-  for (var i=0; i<el_group.length;) {
-    el_group[i].style.display = 'none';
-    hideSub(el_group[i].id);
-    i++;
-  }
-}
-
-function toggleIcon(issue) {
-  var el_issue = document.getElementById(issue);
-  if (el_issue.hasClassName('close')) {
-    el_issue.removeClassName('close');
-    el_issue.addClassName('open');
-  } else {
-    el_issue.removeClassName('open');
-    el_issue.addClassName('close');
-  }
-}
-
-function stripe(tid) {
-  jQuery("#"+tid+" tr:visible").filter(":even").addClass("even").end().filter(":odd").removeClass("even");
 }

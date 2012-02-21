@@ -338,6 +338,8 @@ class TreeviewController < IssuesController
       story_points = CustomField.find(:first, :select => 'id', :conditions => "name = 'Story Points'")
       @query.column_names += ["cf_#{story_points.id}".to_sym] unless story_points.nil?
     end
+    # always show  subject column
+    @query.column_names += [:subject] unless @query.column_names.include?(:subject)
   end
   
   def retrieve_query

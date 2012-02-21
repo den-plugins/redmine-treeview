@@ -1,15 +1,17 @@
+<%  subject_col = 3 %>
 <% form_tag({}) do -%>
 <table class="list issues"  id='issueslist'>
   <thead>
     <tr>
-      <th style='width: 30px'>
+      <th style="width: 23px">
         <%= link_to image_tag('toggle_check.png'), {},
                                                     :onclick => 'toggleIssuesSelection(Element.up(this, "form")); return false;',
                                                     :title => "#{l(:button_check_all)}/#{l(:button_uncheck_all)}" %>
       </th>
-      <%= sort_header_tag('id', :caption => '#', :default_order => 'desc', :style => 'width: 70px;') %>
-      <% query.columns.each do |column| %>
-        <%= column_header(column) %>
+      <%= sort_header_tag('id', :caption => '#', :default_order => 'desc', :style => "width: 73px") %>
+      <% query.columns.each_with_index do |column, index| %>
+        <% subject_col = index+2 if column.name.to_s.eql?('subject') %>
+        <%= tree_column_header(column) %>
       <% end %>
     </tr>
   </thead>
@@ -21,3 +23,10 @@
   </tbody>
 </table>
 <% end -%>
+
+
+<script>
+  jQuery(document).ready(function(){
+    jQuery("#issueslist").treeTable({ treeColumn: <%= subject_col %> });
+  });
+</script>

@@ -1,40 +1,21 @@
-/*table#issueslist {*/
-/*  table-layout: fixed;*/
-/*}*/
+table#issueslist {border-collapse: separate; border-spacing: 0;}
+table#issueslist thead tr {height: 30px;}
+table#issueslist td.subject {border-left: 40px solid transparent;}
+th.tracker {width: 81px;}
 
-table#issueslist  tr td {
-  text-overflow: hidden;
-  overflow: hidden;
-  white-space: nowrap;
-}
+/* jQuery treeTable stylesheet */
 
-tr.child { background-color:#edffe8; }
+.treeTable tr td .expander, .treeTable tr td .expander-p {background-position: left center; background-repeat: no-repeat; cursor: pointer; padding: 0; zoom: 1;}
+.treeTable tr td .expander-p {background-image: url('../images/corner.png');}
 
-tr.close span.treeview img {
-  background-image: url('../images/plus.png');
-  background-repeat: no-repeat;
-}
+.treeTable tr.collapsed td .expander {background-image: url('../images/plus.png');}
+.treeTable tr.expanded td .expander {background-image: url('../images/minus.png');}
 
-tr.open span.treeview img {
-  background-image: url('../images/minus.png');
-  background-repeat: no-repeat;
-}
+.treeTable tr.selected, .treeTable tr.accept {background-color: #3875d7; color: #fff;}
+.treeTable tr.collapsed.selected td .expander, .treeTable tr.collapsed.accept td .expander {background-image: url('../images/plus.png');}
+.treeTable tr.expanded.selected td .expander, .treeTable tr.expanded.accept td .expander {background-image: url('../images/minus.png');}
+.treeTable .ui-draggable-dragging {color: #000; z-index: 1;}
 
-tr.child-p span.treeview img, tr.child-p span.treeview p {
-  background-image: url('../images/corner.png');
-  background-repeat: no-repeat;
-}
+.ui-helper-hidden { display: none; }
 
-span.treeview p {
-  display: inline-block;
-  text-indent:-9999px;
-  outline: 0;
-  padding-left: 16px;
-  text-decoration: none;
-  background-repeat: no-repeat;
-  background-position: right top;
-}
 
-span.treeview a:hover, a:active, a:visited { text-decoration: none; outline: 0; }
-
-.subject a { padding-left: 5px; }
