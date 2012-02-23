@@ -103,6 +103,8 @@
 <% if !@issue.nil? %>
 	<li><%= context_menu_link l(:button_copy), {:controller => 'treeview', :action => 'new', :project_id => @project, :copy_from => @issue},
 	        :class => 'icon-copy', :disabled => !@can[:copy] %></li>
+	<li><%= facebox_context_menu_link l(:button_split), {:controller => 'treeview', :action => 'split', :project_id => @project, :id => @issue},
+	        :disabled => !@can[:split] %></li>
 	<% if @can[:log_time] -%>
 	<li><%= context_menu_link l(:button_log_time), {:controller => 'timelog', :action => 'edit', :issue_id => @issue},
 	        :class => 'icon-time-add' %></li>

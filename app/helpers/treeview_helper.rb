@@ -1,4 +1,22 @@
 module TreeviewHelper
+
+  def facebox_context_menu_link(name, url, options={})
+    options[:class] ||= ''
+    if options.delete(:selected)
+      options[:class] << ' icon-checked disabled'
+      options[:disabled] = true
+    end
+    if options.delete(:disabled)
+      options.delete(:method)
+      options.delete(:confirm)
+      options.delete(:onclick)
+      options[:class] << ' disabled'
+      url = "#"
+      link_to name, url, options
+    else
+      facebox_link_to name, {:url => url}, options
+    end
+  end
   
   def issue_class(issue, children)
     iclass    = "hascontextmenu #{css_issue_classes(issue)} odd " +
