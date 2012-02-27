@@ -340,6 +340,8 @@ class TreeviewController < IssuesController
   end
   
   def split
+    @priorities = Enumeration.priorities
+    @subtasks = @issue.children.select {|c| c.time_entries.empty? and !c.closed?}
     respond_to do |format|
       format.html
       format.js { render_to_facebox :template => "treeview/split" }

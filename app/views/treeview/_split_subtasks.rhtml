@@ -1,0 +1,37 @@
+<div class="table-container">
+<table class="list issues">
+  <thead>
+    <tr>
+      <th style="width: 12%">Tracker</th>
+      <th>Name</th>
+      <th style="width: 14%">Status</th>
+      <th style="width: 9%">Effort</th>
+      <th style="width: 9%">% Done</th>
+      <th style="width: 9%">Time Spent</th>
+      <th style="width: 14%">Time Remaining</th>
+      <%= content_tag "th", "", :style => "width: 6%" if direction.eql?('left') %>
+    </tr>
+  </thead>
+  <tbody>
+  <% if subtasks.any? %>
+    <% subtasks.each do |subtask| %>
+      <tr class="<%= cycle('even', 'odd', :name => 'subtasks') %>">
+        <td><%= subtask.tracker %></td>
+        <td class="left"><%= subtask.subject %></td>
+        <td><%= subtask.status.name %></td>
+        <td><%=  %></td>
+        <td><%= subtask.done_ratio %></td>
+        <td><%= %></td>
+        <td><%= %></td>
+        <%= content_tag "td", image_tag('arrow_from.png', :width => 15) if direction.eql?('left') %>
+      </tr>
+    <% end %>
+    <% reset_cycle 'subtasks' %>
+  <% else %>
+    <tr>
+      <td colspan="<%=direction.eql?('left') ? 8 : 7 %>">No task/s found for this user story or feature.</td>
+    </tr>
+  <% end %>
+  </tbody>
+</table>
+</div>

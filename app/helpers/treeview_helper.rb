@@ -23,6 +23,18 @@ module TreeviewHelper
                               (issue.parent ? "child-of-issue-#{issue.parent_issue.id} " : "" )
   end
   
+  def display_parent_option(issue)
+    "##{issue.id}: #{issue.subject}"
+  end
+  
+  def collection_of_parents
+    @issue.fixed_version ? @issue.fixed_version.fixed_issues.select {|i| i.children.any? && i.feature?} : []
+  end
+  
+  def options_for_version_select
+    @project.versions.empty? ? [] : (@project.versions.sort.collect {|v| [v.name, v.id]})
+  end
+
   def tree_column_header(column)
     if column.sortable
       sort_header_tag(column.name.to_s,

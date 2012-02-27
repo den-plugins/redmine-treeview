@@ -19,3 +19,25 @@ th.tracker {width: 81px;}
 .ui-helper-hidden { display: none; }
 
 
+/***** FACEBOX *******/
+
+#facebox .popup {width: 960px;}
+#facebox .popup td.body {width: 1234px; }
+#facebox .tl, #facebox .tr, #facebox .bl, #facebox .br { background-repeat: no-repeat; width: 5px;}
+
+
+/****** SPLIT ********/
+
+#split-popup .splitcontentleft div.split-label {display: block; float: left; width: 25%; margin: 3px 0;text-overflow: CLIP;height: 15px;}
+#split-popup .splitcontentleft div.split-value {display: block; float: left; width: 72%; background-color: #ddd; margin: 3px 0; padding: 4px; min-height: 15px; overflow: auto;
+                                                                                   border-radius: 5px; -webkit-border-radius: 2px; -moz-border-radius: 2px;}
+#split-popup div.table-container {margin: 10px 0; float: left; width: 99%; max-height: 150px; overflow: auto;}
+
+#split-popup .splitcontentright div.split-options {width: 72%; min-width: 65%; min-height: 15px; float: left; margin: 3px; }
+#split-popup .splitcontentright select {width: 100%; height: 22px;}
+#split-popup .splitcontentright div.split-extra {font-size: 8px; float: left; width: 25%; overflow: hidden; margin-top: 11px;}
+#split-popup .splitcontentright div.split-options.description {width: 100%; height: 106px; min-height: 100px;}
+
+#facebox #split-popup table { font-size: 10px; table-layout: fixed; height:50px; overflow: auto; border: 0;}
+#facebox #split-popup table tr th, #facebox #split-popup table tr td {white-space: normal; text-align: center; height: 22px; vertical-align: middle;}
+#facebox #split-popup table tr td.left {text-align: left;}

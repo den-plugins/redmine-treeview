@@ -1,0 +1,13 @@
+<div style="margin-bottom: 15px"><b>NEW</b></div>
+<% remote_form_for :issue, @issue, :url => {:action => 'split', :id => @issue },
+                                      :html => {:id => 'issue-split-form', :class => nil, :multipart => true} do |f| %>
+  <div class="split-options"><%= f.select :fixed_version_id, (options_for_version_select) %></div>
+  <div class="split-extra"><a class="small">New Target Version</a></div>
+  <div class="split-options"><%= select_tag 'pfeature', options_from_collection_for_select((collection_of_parents), "id", "subject", @issue.id) %></div>
+  <div class="split-extra"><a class="small">New Feature</a></div>
+  <div class="split-options description"><%= f.text_area :description, :style => "height: 99px; width: 98%; resize: none" %></div>
+  <div class="split-options" style="width: 100%"><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}) %></div>
+<% end %>
+
+<%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => [], :direction => 'right'}%>
+
