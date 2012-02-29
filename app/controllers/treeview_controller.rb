@@ -1,13 +1,14 @@
 class TreeviewController < IssuesController
   include FaceboxRender
-  
-  before_filter :find_issue, :only => [:show, :edit, :reply, :split]
+  include TreeviewHelper
+
+  before_filter :find_issue, :only => [:show, :edit, :reply, :split, :transfer]
   before_filter :find_issues, :only => [:show, :bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:new, :update_form, :preview]
   skip_filter :authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new]
   before_filter :treeview_authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new]
   before_filter :authorize, :except => [:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu, :new_remote, :edit_remote, :update_status_remote,
-                                        :rollback_credit]
+                                        :rollback_credit, :transfer]
 
   def index
     retrieve_query
@@ -343,10 +344,26 @@ class TreeviewController < IssuesController
   def split
     @priorities = Enumeration.priorities
     @subtasks = @issue.children.select {|c| c.time_entries.empty? and !c.closed?}
-    respond_to do |format|
-      format.html
-      format.js { render_to_facebox :template => "treeview/split" }
+    @split_feature = params[:split_to] ? Issue.find(params[:split_to][:feature_id]) : Issue.new({:tracker_id => 2})
+    @split_version = params[:split_to] ? Version.find(params[:split_to][:fixed_version_id]) : @issue.fixed_version
+    @split_features_list = @split_version.fixed_issues.select {|issue| splittable?(issue) and !issue.id.eql?(@issue.id)}
+    if params[:split_to]
+      if params[:edit]
+        @split_feature = @split_features_list.first unless @split_features_list.include?(@split_feature)
+      end
+      render :update do |page|
+        page.replace_html 'split-forms', :partial => "treeview/split_form"
+      end
+    else
+      respond_to do |format|
+        format.html
+        format.js { render_to_facebox :template => "treeview/split" }
+      end
     end
+  end
+  
+  def transfer
+    p @issue.subject
   end
   
   def destroy

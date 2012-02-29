@@ -1,5 +1,14 @@
 module TreeviewHelper
 
+  def collection_of_features
+    @split_features_list.collect {|f| [f.subject, f.id]}
+  end
+
+  def collection_of_versions
+    versions = @project.versions.empty? ? [] : @project.versions.sort.reject {|v| v if v.fixed_issues.select {|i| splittable?(i)}.empty? }
+    versions.collect {|v| [v.name, v.id]}
+  end
+
   def facebox_context_menu_link(name, url, options={})
     options[:class] ||= ''
     if options.delete(:selected)
@@ -23,16 +32,20 @@ module TreeviewHelper
                               (issue.parent ? "child-of-issue-#{issue.parent_issue.id} " : "" )
   end
   
-  def display_parent_option(issue)
-    "##{issue.id}: #{issue.subject}"
+  def display_option(issue)
+    "##{issue.id} #{issue.subject}"
   end
   
-  def collection_of_parents
-    @issue.fixed_version ? @issue.fixed_version.fixed_issues.select {|i| i.children.any? && i.feature?} : []
+  def image_link_for_split(subtask)
+    link_to_remote image_tag('arrow_from.png', :width => 15), :url => {:controller => 'treeview', :action => 'transfer', :id => subtask}
   end
   
-  def options_for_version_select
-    @project.versions.empty? ? [] : (@project.versions.sort.collect {|v| [v.name, v.id]})
+  def splittable?(issue)
+    issue.feature? and issue.children.any?
+  end
+  
+  def subtasks_for_split(feature)
+    (feature == @issue) ? [] : feature.children
   end
 
   def tree_column_header(column)

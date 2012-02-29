@@ -1,13 +1,49 @@
-<div style="margin-bottom: 15px"><b>NEW</b></div>
-<% remote_form_for :issue, @issue, :url => {:action => 'split', :id => @issue },
-                                      :html => {:id => 'issue-split-form', :class => nil, :multipart => true} do |f| %>
-  <div class="split-options"><%= f.select :fixed_version_id, (options_for_version_select) %></div>
-  <div class="split-extra"><a class="small">New Target Version</a></div>
-  <div class="split-options"><%= select_tag 'pfeature', options_from_collection_for_select((collection_of_parents), "id", "subject", @issue.id) %></div>
-  <div class="split-extra"><a class="small">New Feature</a></div>
-  <div class="split-options description"><%= f.text_area :description, :style => "height: 99px; width: 98%; resize: none" %></div>
-  <div class="split-options" style="width: 100%"><%= f.select :priority_id, (@priorities.collect {|p| [p.name, p.id]}) %></div>
+<% remote_form_for  :issue, @split_feature, :url => {:action => 'split', :id => @issue, :edit => 1},
+                                       :html => {:id => 'issue-split-form-edit', :class => 'issue-split-form', :multipart => true, :style => "display: #{@split_feature.new_record? ? 'none' : 'block' }" },
+                                       :loading => "$('split-ajax-indicator').show()",
+                                       :complete => "$('split-ajax-indicator').hide()" do %>
+  <div class="split-options" style="width: 100%">
+    <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @split_version.id}, :onchange => "jQuery('#edit_split_form_submit').click();" %>
+  </div>
+  <div class="split-options" >
+    <%= select 'split_to', 'feature_id', collection_of_features, {:selected => @split_feature.id}, :style => "width: 100%", :onchange => "jQuery('#edit_split_form_submit').click();" %>
+  </div>
+  <div class="split-extra">
+    <a class="small" onclick="jQuery('.issue-split-form').toggle();" style="cursor: pointer">Other Features</a>
+  </div>
+  <div class="split-options description">
+    <%= text_area 'split_to', 'description', :value => @split_feature.description, :style => "height: 99px; width: 98%; resize: none" %>
+  </div>
+  <div class="split-options" style="width: 100%">
+    <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @split_feature.priority_id} %>
+  </div>
+  <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => subtasks_for_split(@split_feature)}%>
+  <div class="split-options" style="width: 100%">
+    <%= submit_tag "Save", :id => "edit_split_form_submit", :style => "float: right" %>
+  </div>
 <% end %>
 
-<%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => [], :direction => 'right'}%>
-
+<% remote_form_for  :issue, Issue.new, :url => {:action => 'split', :id => @issue},
+                                       :html => {:id => 'issue-split-form-new', :class => 'issue-split-form', :multipart => true, :style => "display: #{@split_feature.new_record? ? 'block' : 'none' }"},
+                                       :loading => "$('split-ajax-indicator').show()",
+                                       :complete => "$('split-ajax-indicator').hide()" do %>
+  <div class="split-options" style="width: 100%">
+    <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @issue.fixed_version_id } %>
+  </div>
+  <div class="split-options" >
+    <%= text_field 'split_to', 'subject', :value => "#{h @issue.subject} - 2", :style => "width: 99%" %>
+  </div>
+  <div class="split-extra">
+    <a class="small" onclick="jQuery('.issue-split-form').toggle();" style="cursor: pointer">Other Features</a>
+  </div>
+  <div class="split-options description">
+    <%= text_area 'split_to', 'description', :style => "height: 99px; width: 98%; resize: none" %>
+  </div>
+  <div class="split-options" style="width: 100%">
+    <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @issue.priority_id }%>
+  </div>
+  <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => []}%>
+  <div class="split-options" style="width: 100%">
+    <%= submit_tag "Save", :id => "new_split_form_submit", :style => "float: right" %>
+  </div>
+<% end %>
