@@ -12,6 +12,7 @@ class TreeviewController < IssuesController
   def index
     retrieve_query
     sort_init(@query.sort_criteria.empty? ? [['id', 'desc']] : @query.sort_criteria)
+    @query.available_columns << QueryColumn.new(:remaining_effort)
     sort_update({'id' => "#{Issue.table_name}.id"}.merge(@query.available_columns.inject({}) {|h, c| h[c.name.to_s] = c.sortable; h}))
     @back = url_for(:controller => 'treeview', :action => 'index')
     
