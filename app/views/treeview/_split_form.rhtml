@@ -24,7 +24,7 @@
   </div>
   <% if !@split_feature.new_record? %>
   <script type="text/javascript">
-    jQuery("#splittable_list td.small img").click(function(){
+    jQuery("#splittable_list td.small img").unbind("click").click(function(){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
       transfer_task(id, 'edit');
     });
@@ -57,7 +57,7 @@
   </div>
   <% if @split_feature.new_record? %>
   <script type="text/javascript">
-    jQuery("#splittable_list td.small img").click(function(){
+    jQuery("#splittable_list td.small img").unbind("click").click(function(){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
       console.log(id);
       transfer_task(id, 'new');
