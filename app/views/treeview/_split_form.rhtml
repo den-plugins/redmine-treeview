@@ -22,6 +22,14 @@
   <div class="split-options" style="width: 100%">
     <%= submit_tag "Save", :id => "edit_split_form_submit", :style => "float: right" %>
   </div>
+  <% if !@split_feature.new_record? %>
+  <script type="text/javascript">
+    jQuery("#splittable_list td.small img").click(function(){
+      var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
+      transfer_task(id, 'edit');
+    });
+  </script>
+  <% end %>
 <% end %>
 
 <% remote_form_for  :issue, Issue.new, :url => {:action => 'split', :id => @issue},
@@ -47,4 +55,13 @@
   <div class="split-options" style="width: 100%">
     <%= submit_tag "Save", :id => "new_split_form_submit", :style => "float: right" %>
   </div>
+  <% if @split_feature.new_record? %>
+  <script type="text/javascript">
+    jQuery("#splittable_list td.small img").click(function(){
+      var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
+      console.log(id);
+      transfer_task(id, 'new');
+    });
+  </script>
+  <% end %>
 <% end %>

@@ -26,8 +26,7 @@
               <td><%= subtask.status.name %></td>
               <td><%=  %></td>
               <td class="small">
-                <%= image_tag('arrow_from.png', :width => 15, 
-                    :onclick => "transfer_task(#{subtask.id}, '#{@split_feature.new_record? ? 'new' : 'edit'}')") %>
+                <%= image_tag('arrow_from.png', :width => 15) %>
               </td>
             </tr>
           <% end %>
