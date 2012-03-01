@@ -7,7 +7,7 @@
     <div class="split-label">Description:</div><div class="split-value" style="height: 100px"><%= textilizable @issue.description %></div>
     <div class="split-label">Priority:</div><div class="split-value"><%= @issue.priority %></div>
     <div class="table-container">
-      <table class="list issues">
+      <table id="splittable_list" class="list issues">
         <thead>
           <tr>
             <th style="width: 12%">Tracker</th>
@@ -20,12 +20,15 @@
         <tbody>
         <% if @subtasks.any? %>
           <% @subtasks.each do |subtask| %>
-            <tr class="<%= cycle('even', 'odd', :name => 'subtasks') %>">
+            <tr id="s_<%= subtask.id %>" class="<%= cycle('even', 'odd', :name => 'subtasks') %>">
               <td><%= subtask.tracker %></td>
               <td class="left"><%= subtask.subject %></td>
               <td><%= subtask.status.name %></td>
               <td><%=  %></td>
-              <td class="small"><%= image_tag('arrow_from.png', :width => 15) %></td>
+              <td class="small">
+                <%= image_tag('arrow_from.png', :width => 15, 
+                    :onclick => "transfer_task(#{subtask.id}, '#{@split_feature.new_record? ? 'new' : 'edit'}')") %>
+              </td>
             </tr>
           <% end %>
           <% reset_cycle 'subtasks' %>

@@ -1,5 +1,5 @@
 <div class="table-container">
-<table class="list issues">
+<table id="transfer_table_<%= type %>" class="list issues">
   <thead>
     <tr>
       <th style="width: 12%">Tracker</th>
@@ -20,7 +20,7 @@
     <% end %>
     <% reset_cycle 'subtasks' %>
   <% else %>
-    <tr>
+    <tr id="no_tasks_<%= type %>">
       <td colspan="4">No task/s found for this user story or feature.</td>
     </tr>
   <% end %>

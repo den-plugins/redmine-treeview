@@ -18,7 +18,7 @@
   <div class="split-options" style="width: 100%">
     <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => value_for_priority_id_selected} %>
   </div>
-  <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => subtasks_for_split(@split_feature)}%>
+  <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => subtasks_for_split(@split_feature), :type => "edit"}%>
   <div class="split-options" style="width: 100%">
     <%= submit_tag "Save", :id => "edit_split_form_submit", :style => "float: right" %>
   </div>
@@ -43,7 +43,7 @@
   <div class="split-options" style="width: 100%">
     <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @issue.priority_id }%>
   </div>
-  <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => []}%>
+  <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => [], :type => "new"}%>
   <div class="split-options" style="width: 100%">
     <%= submit_tag "Save", :id => "new_split_form_submit", :style => "float: right" %>
   </div>
