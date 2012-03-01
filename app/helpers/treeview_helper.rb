@@ -1,12 +1,11 @@
 module TreeviewHelper
 
   def collection_of_features
-    @split_features_list.collect {|f| [f.subject, f.id]}
+    @split_features_list.empty? ? [] : @split_features_list.collect {|f| [f.subject, f.id]}
   end
 
   def collection_of_versions
-    versions = @project.versions.empty? ? [] : @project.versions.sort.reject {|v| v if v.fixed_issues.select {|i| splittable?(i)}.empty? }
-    versions.collect {|v| [v.name, v.id]}
+    @project.versions.empty? ? [] : @project.versions.sort.collect {|v| [v.name, v.id]}
   end
 
   def facebox_context_menu_link(name, url, options={})
@@ -56,6 +55,22 @@ module TreeviewHelper
         :class => column.name.to_s)
     else
       content_tag('th', column.caption, :class => column.name.to_s)
+    end
+  end
+  
+  def value_for_description
+    if @split_feature.new_record?
+      @split_features_list.empty? ? "" : @split_features_list.first.description
+    else
+      @split_feature.description
+    end
+  end
+  
+  def value_for_priority_id_selected
+    if @split_feature.new_record?
+      @split_features_list.empty? ? "" : @split_features_list.first.priority_id
+    else
+      @split_feature.priority_id
     end
   end
 end

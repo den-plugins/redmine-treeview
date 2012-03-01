@@ -346,10 +346,14 @@ class TreeviewController < IssuesController
     @subtasks = @issue.children.select {|c| !c.closed?}
     @split_feature = params[:split_to] ? Issue.find(params[:split_to][:feature_id]) : Issue.new({:tracker_id => 2})
     @split_version = params[:split_to] ? Version.find(params[:split_to][:fixed_version_id]) : @issue.fixed_version
-    @split_features_list = @split_version.fixed_issues.select {|issue| splittable?(issue) and !issue.id.eql?(@issue.id)}
+    @split_features_list = @split_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
     if params[:split_to]
       if params[:edit]
-        @split_feature = @split_features_list.first unless @split_features_list.include?(@split_feature)
+        if @split_features_list.empty?
+          @split_feature = @project.issues.new({:tracker_id => 2})
+        else
+          @split_feature = @split_features_list.first unless @split_features_list.include?(@split_feature)
+        end
       end
       render :update do |page|
         page.replace_html 'split-forms', :partial => "treeview/split_form"

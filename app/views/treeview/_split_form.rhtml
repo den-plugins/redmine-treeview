@@ -12,10 +12,11 @@
     <a class="small" onclick="jQuery('.issue-split-form').toggle();" style="cursor: pointer">Other Features</a>
   </div>
   <div class="split-options description">
-    <%= text_area 'split_to', 'description', :value => @split_feature.description, :style => "height: 99px; width: 98%; resize: none" %>
+    <%= text_area 'split_to', 'description', :value => value_for_description,
+                                                                          :style => "height: 99px; width: 98%; resize: none" %>
   </div>
   <div class="split-options" style="width: 100%">
-    <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @split_feature.priority_id} %>
+    <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => value_for_priority_id_selected} %>
   </div>
   <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => subtasks_for_split(@split_feature)}%>
   <div class="split-options" style="width: 100%">
@@ -28,7 +29,7 @@
                                        :loading => "$('split-ajax-indicator').show()",
                                        :complete => "$('split-ajax-indicator').hide()" do %>
   <div class="split-options" style="width: 100%">
-    <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @issue.fixed_version_id } %>
+    <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @split_version.id } %>
   </div>
   <div class="split-options" >
     <%= text_field 'split_to', 'subject', :value => "#{h @issue.subject} - 2", :style => "width: 99%" %>
