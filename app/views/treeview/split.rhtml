@@ -10,27 +10,19 @@
       <table id="splittable_list" class="list issues">
         <thead>
           <tr>
-            <th style="width: 12%">Tracker</th>
+            <th style="width: 11%">Tracker</th>
             <th>Name</th>
             <th style="width: 14%">Status</th>
-            <th style="width: 9%">Effort</th>
-            <th style="width: 6%"></th>
+            <th style="width: 7%">Effort</th>
+            <th style="width: 5%"></th>
           </tr>
         </thead>
         <tbody>
         <% if @subtasks.any? %>
           <% @subtasks.each do |subtask| %>
-            <tr id="s_<%= subtask.id %>" class="<%= cycle('even', 'odd', :name => 'subtasks') %>">
-              <td><%= subtask.tracker %></td>
-              <td class="left"><%= subtask.subject %></td>
-              <td><%= subtask.status.name %></td>
-              <td><%=  %></td>
-              <td class="small">
-                <%= image_tag('arrow_from.png', :width => 15) %>
-              </td>
-            </tr>
+            <%= render :partial => "treeview/split_issue", :locals => {:subtask => subtask} %>
           <% end %>
-          <% reset_cycle 'subtasks' %>
+          <script> stripe('splittable_list'); </script>
         <% else %>
           <tr>
             <td colspan="5">No task/s found for this user story or feature.</td>
@@ -47,3 +39,13 @@
   </div>
   <div style="clear: both"></div>
 </div>
+
+
+<script>
+  jQuery(document).ready(function(){
+    jQuery("#splittable_list").treeTable({
+      treeColumn: 1,
+      expandable: false
+    });
+  });
+</script>

@@ -1,0 +1,14 @@
+<tr id="s_<%= subtask.id %>" class="<%= split_subtask_class subtask %>">
+  <td><%= subtask.tracker %></td>
+  <td class="left ssubject"><%= subtask.subject %></td>
+  <td><%= subtask.status.name %></td>
+  <td><%=  %></td>
+  <td class="small"><%= image_tag('arrow_from.png', :width => 15) %></td>
+</tr>
+
+<% children = subtask.children %>
+<% unless children.empty? %>
+  <% children.each do |c| %>
+    <%= render :partial => 'treeview/split_issue', :locals => {:subtask => c} %>
+  <% end %>
+<% end %>

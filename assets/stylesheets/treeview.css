@@ -5,8 +5,8 @@ th.tracker {width: 81px;}
 
 /* jQuery treeTable stylesheet */
 
-.treeTable tr td .expander, .treeTable tr td .expander-p {background-position: left center; background-repeat: no-repeat; cursor: pointer; padding: 0; zoom: 1;}
-.treeTable tr td .expander-p {background-image: url('../images/corner.png');}
+table#issueslist.treeTable tr td .expander, .treeTable tr td .expander-p {background-position: left center; background-repeat: no-repeat; cursor: pointer; padding: 0; zoom: 1;}
+table#issueslist.treeTable tr td .expander-p {background-image: url('../images/corner.png');}
 
 .treeTable tr.collapsed td .expander {background-image: url('../images/plus.png');}
 .treeTable tr.expanded td .expander {background-image: url('../images/minus.png');}
@@ -21,8 +21,8 @@ th.tracker {width: 81px;}
 
 /***** FACEBOX *******/
 
-#facebox .popup {width: 960px;}
-#facebox .popup td.body {width: 1234px; }
+#facebox .popup {width: 1160px;}
+#facebox .popup td.body {width: 1434px; }
 #facebox .tl, #facebox .tr, #facebox .bl, #facebox .br { background-repeat: no-repeat; width: 5px;}
 
 
@@ -32,7 +32,7 @@ th.tracker {width: 81px;}
 #split-popup .splitcontentleft div.split-value {display: block; float: left; width: 72%; background-color: #ddd; margin: 3px 0; padding: 4px; min-height: 15px; overflow: auto;
                                                                                    border-radius: 5px; -webkit-border-radius: 2px; -moz-border-radius: 2px;}
 #split-popup .splitcontentleft div.split-value img {width: 100%;}
-#split-popup div.table-container {margin: 10px 0; float: left; width: 99%; max-height: 150px; overflow: auto;}
+#split-popup div.table-container {margin: 10px 0; float: left; width: 99%; max-height: 200px; overflow: auto;}
 
 #split-popup .splitcontentright div.split-options {width: 80%; min-width: 65%; min-height: 15px; float: left; margin: 3px; }
 #split-popup .splitcontentright select { height: 22px;}
@@ -42,6 +42,7 @@ th.tracker {width: 81px;}
 #facebox #split-popup table { font-size: 10px; table-layout: fixed; height:50px; overflow: auto; border: 0;}
 #facebox #split-popup table tr th, #facebox #split-popup table tr td {white-space: normal; text-align: center; height: 22px; vertical-align: middle;}
 #facebox #split-popup table tr td.left {text-align: left;}
+#facebox #split-popup table tr td.ssubject {white-space: nowrap; overflow: hidden;}
 
 #split-ajax-indicator {background-color: #ddd; position: absolute; width: 47%; height: 74%; opacity: 0.5; font-weight: bold;
                                         border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; padding: 2px;}

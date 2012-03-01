@@ -27,8 +27,8 @@ module TreeviewHelper
   end
   
   def issue_class(issue, children)
-    iclass    = "hascontextmenu #{css_issue_classes(issue)} odd " +
-                              (issue.parent ? "child-of-issue-#{issue.parent_issue.id} " : "" )
+    iclass = "hascontextmenu #{css_issue_classes(issue)} odd " +
+                    (issue.parent ? "child-of-issue-#{issue.parent_issue.id} " : "" )
   end
   
   def display_option(issue)
@@ -41,6 +41,11 @@ module TreeviewHelper
   
   def splittable?(issue)
     issue.feature? and issue.children.any?
+  end
+  
+  def split_subtask_class(issue)
+    iclass = "odd #{css_issue_classes(issue)} " +
+                    ((issue.parent and !issue.parent_issue.eql?(@issue)) ? "child-of-s_#{issue.parent_issue.id}" : "")
   end
   
   def subtasks_for_split(feature)
