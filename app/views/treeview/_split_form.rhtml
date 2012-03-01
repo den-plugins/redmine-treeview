@@ -26,7 +26,11 @@
   <script type="text/javascript">
     jQuery("#splittable_list td.small img").unbind("click").click(function(){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
-      transfer_task(id, 'edit');
+      if(jQuery(this).closest('tr').hasClass("is_parent")){
+        transfer_descendants(jQuery(".child-of-s_" + id), 'new');
+      }else{
+        transfer_task(id, 'edit');
+      }
     });
   </script>
   <% end %>
@@ -59,8 +63,11 @@
   <script type="text/javascript">
     jQuery("#splittable_list td.small img").unbind("click").click(function(){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
-      console.log(id);
-      transfer_task(id, 'new');
+      if(jQuery(this).closest('tr').hasClass("is_parent")){
+        transfer_descendants(jQuery(".child-of-s_" + id), 'new');
+      }else{
+        transfer_task(id, 'new');
+      }
     });
   </script>
   <% end %>
