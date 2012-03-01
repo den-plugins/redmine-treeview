@@ -38,11 +38,13 @@ table#issueslist.treeTable tr td .expander-p {background-image: url('../images/c
 #split-popup .splitcontentright select { height: 22px;}
 #split-popup .splitcontentright div.split-extra {font-size: 8px; float: left; width: 17%; overflow: hidden; margin-top: 11px;}
 #split-popup .splitcontentright div.split-options.description {width: 100%; height: 106px; min-height: 100px;}
+#split-popup .splitcontentright div.split-options .floating {width: 200px; float: left; margin-left: 20px}
 
 #facebox #split-popup table { font-size: 10px; table-layout: fixed; height:50px; overflow: auto; border: 0;}
 #facebox #split-popup table tr th, #facebox #split-popup table tr td {white-space: normal; text-align: center; height: 22px; vertical-align: middle;}
 #facebox #split-popup table tr td.left {text-align: left;}
 #facebox #split-popup table tr td.ssubject {white-space: nowrap; overflow: hidden;}
+#facebox #split-popup table tr span.marquish {position: relative; left: 0; }
 
 #split-ajax-indicator {background-color: #ddd; position: absolute; width: 47%; height: 74%; opacity: 0.5; font-weight: bold;
                                         border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; padding: 2px;}

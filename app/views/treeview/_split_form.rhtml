@@ -18,8 +18,13 @@
   <div class="split-options" style="width: 100%">
     <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => value_for_priority_id_selected} %>
   </div>
+  <div class="split-options" style="width: 100%; margin-top: 10px;">
+    <% collection_of_predefined_tasks.each do |ptask| %>
+      <span class="floating"><%= check_box_tag 'split_to[predefined_tasks][]', ptask %> <%= h ptask %></span>
+    <% end %>
+  </div>
   <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => subtasks_for_split(@split_feature), :type => "edit"}%>
-  <div class="split-options" style="width: 100%">
+  <div class="split-options" style="width: 100%;">
     <%= submit_tag "Save", :id => "edit_split_form_submit", :style => "float: right" %>
   </div>
   <% if !@split_feature.new_record? %>
@@ -54,6 +59,11 @@
   </div>
   <div class="split-options" style="width: 100%">
     <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @issue.priority_id }%>
+  </div>
+  <div class="split-options" style="width: 100%; margin-top: 10px;">
+    <% collection_of_predefined_tasks.each do |ptask| %>
+      <span class="floating"><%= check_box_tag 'split_to[predefined_tasks][]', ptask %> <%= h ptask %></span>
+    <% end %>
   </div>
   <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => [], :type => "new"}%>
   <div class="split-options" style="width: 100%">

@@ -32,12 +32,22 @@
           if(!isRootNode && options.expandable && options.initialState == "collapsed") {
             $(this).addClass('ui-helper-hidden');
           }
+          
+          var tp = $(this);
+          var  tpChildren = childrenOf(tp);
+
+          if(!tp.hasClass("parent") && tpChildren.length <= 0) {
+            if (tp[0].className.search(options.childPrefix) != -1) {
+              var cell = $(tp.children("td")[options.treeColumn]);
+              cell.prepend('<span style="margin-left: -' + options.indent + 'px; padding-left: ' + options.indent + 'px" class="expander-p"></span>');
+            }
+          }
 
           // If we're not in expandable mode, initialize all nodes.
           // If we're in expandable mode, only initialize root nodes.
-          if(!options.expandable || isRootNode) {
+          //if(!options.expandable || isRootNode) {
             initialize($(this));
-          }
+          //}
         }
       });
     });
@@ -202,7 +212,7 @@
         childNodes.each(function() {
           $(this).children("td")[options.treeColumn].style.paddingLeft = padding + "px";
         });
-
+        
         if(options.expandable) {
           cell.prepend('<span style="margin-left: -' + options.indent + 'px; padding-left: ' + options.indent + 'px" class="expander"></span>');
           $(cell[0].firstChild).click(function() { node.toggleBranch(); });
@@ -232,12 +242,6 @@
           if(node.hasClass("expanded")) {
             node.expand();
           }
-        }
-      }else{
-        // !parent but a child-of-
-        if (node[0].className.search(options.childPrefix) != -1) {
-          var cell = $(node.children("td")[options.treeColumn]);
-          cell.prepend('<span style="margin-left: -' + options.indent + 'px; padding-left: ' + options.indent + 'px" class="expander-p"></span>');
         }
       }
     }

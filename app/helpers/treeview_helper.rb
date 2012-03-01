@@ -7,6 +7,16 @@ module TreeviewHelper
   def collection_of_versions
     @project.versions.empty? ? [] : @project.versions.sort.collect {|v| [v.name, v.id]}
   end
+  
+  def collection_of_predefined_tasks
+    predef_tasks = @split_feature.predef_tasks
+    if @split_feature.new_record?
+      predef_tasks
+    else
+      existing_predef_tasks = @split_feature.children.map {|c| c.subject.split("-").first.strip if predef_tasks.member?(c.subject.split("-").first.strip)}.compact
+      predef_tasks - existing_predef_tasks
+    end
+  end
 
   def facebox_context_menu_link(name, url, options={})
     options[:class] ||= ''
