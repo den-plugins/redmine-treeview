@@ -52,8 +52,10 @@
 	<% if @issues.empty? %>
 		<p class="nodata"><%= l(:label_no_data) %></p>
 	<% else %>
+	  <div id="treeview_list_content">
 		<%= render :partial => 'treeview/list', :locals => {:issues => @issues, :query => @query} %>
 		<p class="pagination"><%= pagination_links_full @issue_pages, @issue_count %></p>
+		</div>
 	<% end %>
 <% else %>
 	<p class="nodata"><%= l(:label_no_data) %></p>

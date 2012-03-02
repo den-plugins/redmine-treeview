@@ -390,9 +390,7 @@ class TreeviewController < IssuesController
           end
         end
       end
-      render :update do |page|
-        page.replace_html 'split-forms', :partial => "treeview/split_form"
-      end
+      render :js => "jQuery('#facebox .close').trigger('click'); location.reload();"
     else
       respond_to do |format|
         format.html

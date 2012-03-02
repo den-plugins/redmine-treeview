@@ -3,7 +3,7 @@
   <td class="left ssubject"><span class="marquish"><%= subtask.subject %></span></td>
   <td><%= subtask.status.name %></td>
   <td><%=  %></td>
-  <td class="small"><%= image_tag('arrow_from.png', :width => 15) %></td>
+  <td class="small"><%= subtask.is_transferable? ? image_tag('arrow_from.png', :width => 15) : "" %></td>
 </tr>
 
 <% children = subtask.children %>
