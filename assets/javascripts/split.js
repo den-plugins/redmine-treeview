@@ -2,6 +2,7 @@ function transfer_task(id, type){
   var subtask = jQuery("#s_" + id),
       hasParent = subtask.attr("class").match(/child-of-s_\d+/),
       data = "<tr id='transferred_" + id + "'>" + subtask.html() + "</tr>",
+      childId = id,
       parentDOMID = (hasParent ? ("#transferred_" + hasParent[0].match(/\d+/)) : null),
       after = ((hasParent && (jQuery(parentDOMID).length != 0))? parentDOMID : "tr:last");
   if(jQuery("#transferred_" + id).length == 0){
@@ -16,7 +17,6 @@ function transfer_task(id, type){
     
     while(hasParent){
       var parentId = hasParent[0].match(/\d+/),
-            childId = id;
             subtask2 = jQuery("#s_" + parentId),
             data2 = "<tr id='transferred_" + parentId + "'>" + subtask2.html() + "</tr>";
       if(jQuery("#transferred_" + parentId).length == 0){
