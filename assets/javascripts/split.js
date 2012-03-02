@@ -12,7 +12,7 @@ function transfer_task(id, type){
       jQuery("#no_tasks_" + type).remove();
       jQuery("#transfer_table_" + type).append(data).find(".small").remove();
     }
-    jQuery("#transferred_subtasks_" + type).val(jQuery("#transferred_subtasks_" + type).val() + id + " ");
+    jQuery("#transferred_" + id).append("<input type='hidden' name='transferred_subtasks[]' value='"+ id +"'>");
     subtask.hide();
     
     while(hasParent){
@@ -21,6 +21,9 @@ function transfer_task(id, type){
             data2 = "<tr id='transferred_" + parentId + "'>" + subtask2.html() + "</tr>";
       if(jQuery("#transferred_" + parentId).length == 0){
         jQuery(data2).insertBefore("#transfer_table_" + type + " #transferred_" + childId).find(".small").remove();
+        if(jQuery("#transferred_" + parentId).find('input').length == 0){
+          jQuery("#transferred_" + parentId).append("<input type='hidden' name='transferred_subtasks[]' value='"+ parentId +"'>");
+        }
         hasParent = subtask2.attr("class").match(/child-of-s_\d+/);
         childId= parentId;
       }else{
