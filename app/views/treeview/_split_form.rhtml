@@ -32,6 +32,7 @@
     jQuery("#splittable_list td.small img").unbind("click").click(function(){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
       if(jQuery(this).closest('tr').hasClass("is_parent")){
+        jQuery(this).hide();
         transfer_descendants(jQuery(".child-of-s_" + id), 'new');
       }else{
         transfer_task(id, 'edit');
@@ -74,6 +75,7 @@
     jQuery("#splittable_list td.small img").unbind("click").click(function(){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
       if(jQuery(this).closest('tr').hasClass("is_parent")){
+        jQuery(this).closest('tr').hide();
         transfer_descendants(jQuery(".child-of-s_" + id), 'new');
       }else{
         transfer_task(id, 'new');

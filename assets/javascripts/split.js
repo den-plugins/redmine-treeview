@@ -11,7 +11,7 @@ function transfer_task(id, type){
       jQuery("#no_tasks_" + type).remove();
       jQuery("#transfer_table_" + type).append(data).find(".small").remove();
     }
-    jQuery("#transferred_" + type).val(jQuery("#transferred_" + type).val() + id + " ");
+    jQuery("#transferred_subtasks_" + type).val(jQuery("#transferred_subtasks_" + type).val() + id + " ");
     subtask.hide();
     
     while(hasParent){
@@ -34,6 +34,7 @@ function transfer_task(id, type){
 function transfer_descendants(descendants, type){
   for(var i=0; i < descendants.length; i++){
     transfer_task(jQuery(descendants[i]).attr("id").match(/\d+$/), type);
+    transfer_descendants(jQuery(".child-of-s_" + jQuery(descendants[i]).attr("id").match(/\d+$/)), 'new');
   }
 }
 
