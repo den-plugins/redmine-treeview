@@ -31,13 +31,49 @@ function transfer_task(id, type){
       }
     }
   }
-
 }
 
 function transfer_descendants(descendants, type){
   for(var i=0; i < descendants.length; i++){
     transfer_task(jQuery(descendants[i]).attr("id").match(/\d+$/), type);
-    transfer_descendants(jQuery(".child-of-s_" + jQuery(descendants[i]).attr("id").match(/\d+$/)), 'new');
+    transfer_descendants(jQuery(".child-of-s_" + jQuery(descendants[i]).attr("id").match(/\d+$/)), type);
+  }
+}
+
+function reset_transferred(type){
+  var table1 = jQuery("#splittable_list"),
+      table2 = jQuery("#transfer_table_" + type);
+  table1.find("tr:hidden").show();
+  var table2_rows = table2.find("tbody tr");
+  for(var i = 0; i < table2_rows.length; i++){
+    var rowId = jQuery(table2_rows[i]).attr('id');
+    if(rowId && rowId.match(/transferred_\d+/)){
+      jQuery("#" + rowId).remove();
+    }
+  }
+  if(table2.find('tbody tr').length == 0){
+    table2.find('tbody')
+          .append('<tr id="no_tasks_'+ type +'"><td colspan="4">No task/s found for this user story or feature.</td></tr>');
+  }
+}
+
+function bind_transfer_event(type){
+   jQuery("#splittable_list td.small img").unbind("click").click(function(){
+      var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
+      if(jQuery(this).closest('tr').hasClass("is_parent")){
+        jQuery(this).closest('tr').hide();
+        transfer_descendants(jQuery(".child-of-s_" + id), type);
+      }else{
+        transfer_task(id, type);
+      }
+    });
+}
+
+function init_binding(){
+  if(jQuery("#issue-split-form-edit").css('display') == 'none'){
+    bind_transfer_event('new');
+  }else if(jQuery("#issue-split-form-new").css('display') == 'none'){
+    bind_transfer_event('edit');
   }
 }
 

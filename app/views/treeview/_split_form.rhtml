@@ -3,13 +3,13 @@
                                        :loading => "$('split-ajax-indicator').show()",
                                        :complete => "$('split-ajax-indicator').hide()" do %>
   <div class="split-options" style="width: 100%">
-    <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @split_version.id}, :onchange => "jQuery('#edit_split_form_submit').click();" %>
+    <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @split_version.id}, :onchange => "jQuery('#edit_split_form_submit').click(); reset_transferred('edit'); init_binding();" %>
   </div>
   <div class="split-options" >
-    <%= select 'split_to', 'feature_id', collection_of_features, {:selected => @split_feature.id}, :style => "width: 100%", :onchange => "jQuery('#edit_split_form_submit').click();" %>
+    <%= select 'split_to', 'feature_id', collection_of_features, {:selected => @split_feature.id}, :style => "width: 100%", :onchange => "jQuery('#edit_split_form_submit').click(); reset_transferred('edit'); init_binding();" %>
   </div>
   <div class="split-extra">
-    <a class="small" onclick="jQuery('.issue-split-form').toggle();" style="cursor: pointer">Other Features</a>
+    <a class="small" onclick="jQuery('.issue-split-form').toggle(); reset_transferred('edit'); init_binding();" style="cursor: pointer">Other Features</a>
   </div>
   <div class="split-options description">
     <%= text_area 'split_to', 'description', :value => value_for_description,
@@ -26,19 +26,6 @@
   <div class="split-options" style="width: 100%;">
     <%= submit_tag "Save", :id => "edit_split_form_submit", :style => "float: right" %>
   </div>
-  <% if !@split_feature.new_record? %>
-  <script type="text/javascript">
-    jQuery("#splittable_list td.small img").unbind("click").click(function(){
-      var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
-      if(jQuery(this).closest('tr').hasClass("is_parent")){
-        jQuery(this).hide();
-        transfer_descendants(jQuery(".child-of-s_" + id), 'new');
-      }else{
-        transfer_task(id, 'edit');
-      }
-    });
-  </script>
-  <% end %>
 <% end %>
 
 <% remote_form_for  :issue, Issue.new, :url => {:action => 'split', :id => @issue},
@@ -52,7 +39,7 @@
     <%= text_field 'split_to', 'subject', :value => "#{h @issue.subject} - 2", :style => "width: 99%" %>
   </div>
   <div class="split-extra">
-    <a class="small" onclick="jQuery('.issue-split-form').toggle();" style="cursor: pointer">Other Features</a>
+    <a class="small" onclick="jQuery('.issue-split-form').toggle(); reset_transferred('new'); init_binding();" style="cursor: pointer">Other Features</a>
   </div>
   <div class="split-options description">
     <%= text_area 'split_to', 'description', :style => "height: 99px; width: 98%; resize: none" %>
@@ -67,17 +54,10 @@
   <div class="split-options" style="width: 100%">
     <%= submit_tag "Save", :id => "new_split_form_submit", :style => "float: right" %>
   </div>
-  <% if @split_feature.new_record? %>
-  <script type="text/javascript">
-    jQuery("#splittable_list td.small img").unbind("click").click(function(){
-      var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
-      if(jQuery(this).closest('tr').hasClass("is_parent")){
-        jQuery(this).closest('tr').hide();
-        transfer_descendants(jQuery(".child-of-s_" + id), 'new');
-      }else{
-        transfer_task(id, 'new');
-      }
-    });
-  </script>
-  <% end %>
 <% end %>
+
+<script type="text/javascript">
+  jQuery(function(){
+    init_binding();
+  });
+</script>
