@@ -344,15 +344,50 @@ class TreeviewController < IssuesController
   def split
     @priorities = Enumeration.priorities
     @subtasks = @issue.children.select {|c| !c.closed?}
-    @split_feature = params[:split_to] ? Issue.find(params[:split_to][:feature_id]) : Issue.new({:tracker_id => 2})
+    @split_feature = (params[:split_to] && params[:edit]) ? @project.issues.find(params[:split_to][:feature_id]) : Issue.new
     @split_version = params[:split_to] ? Version.find(params[:split_to][:fixed_version_id]) : @issue.fixed_version
     @split_features_list = @split_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
     if params[:split_to]
       if params[:edit]
+        # edit chosen feature
         if @split_features_list.empty?
-          @split_feature = @project.issues.new({:tracker_id => 2})
+          @split_feature = Issue.new
         else
           @split_feature = @split_features_list.first unless @split_features_list.include?(@split_feature)
+        end
+        
+      else
+        # create new feature
+        feature = params[:split_to].merge({:tracker_id => 2})
+        @split_feature.project = @project
+        @split_feature.attributes = feature
+        @split_feature.predefined_tasks = feature['predefined_tasks']
+        @split_feature.author = User.current
+        default_status = IssueStatus.default
+        unless default_status
+          render_error 'No default issue status is defined. Please check your configuration (Go to "Administration -> Issue statuses").'
+          return
+        end
+        @split_feature.status = default_status
+        
+        if @split_feature.save
+          @split_feature.predefined_tasks = nil
+          if (transferred=params["transferred_subtasks"]) && !transferred.empty?
+            # edit chosen subtasks
+            transferred = transferred.map {|t| t }.join(", ")
+            subtasks = IssueRelation.find(:all, :conditions => ["issue_to_id in (#{transferred}) and relation_type='subtasks'"])
+            subtasks.each do |s|
+              sissue = s.issue_to
+              sissue.fixed_version = @split_version
+              sissue.save
+              subtask = IssueRelation.new()
+              subtask.issue_from = @split_feature
+              subtask.issue_to = s.issue_to
+              subtask.relation_type = 'subtasks'
+              s.destroy
+              subtask.save
+            end
+          end
         end
       end
       render :update do |page|
@@ -364,6 +399,9 @@ class TreeviewController < IssuesController
         format.js { render_to_facebox :template => "treeview/split" }
       end
     end
+  rescue ActiveRecord::StaleObjectError
+    # Optimistic locking exception
+    flash[:error] = l(:notice_locking_conflict)
   end
   
   def transfer
