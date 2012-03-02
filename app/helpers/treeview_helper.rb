@@ -8,14 +8,21 @@ module TreeviewHelper
     @project.versions.empty? ? [] : @project.versions.sort.collect {|v| [v.name, v.id]}
   end
   
-  def collection_of_predefined_tasks
-    predef_tasks = @split_feature.predef_tasks
-    if @split_feature.new_record?
-      predef_tasks
+  def display_predefined_tasks(issue)
+    tasks_list = ""
+    predef_tasks = issue.predef_tasks
+    if (issue == @issue)
+      predef_tasks.each do |ptask|
+        tasks_list << content_tag('span', (check_box_tag 'split_to[predefined_tasks][]', ptask) + (h ptask), :class => 'floating')
+      end
     else
-      existing_predef_tasks = @split_feature.children.map {|c| c.subject.split("-").first.strip if predef_tasks.member?(c.subject.split("-").first.strip)}.compact
-      predef_tasks - existing_predef_tasks
+      existing_predef_tasks = issue.children.map {|c| c.subject.split("-").first.strip if predef_tasks.member?(c.subject.split("-").first.strip)}.compact
+      predef_tasks.each do |ptask|
+        disabled = existing_predef_tasks.include?(ptask) ? true : false
+        tasks_list << content_tag('span', (check_box_tag 'split_to[predefined_tasks][]', ptask, disabled, :disabled => disabled) + (h ptask), :class => 'floating')
+      end
     end
+    tasks_list
   end
 
   def facebox_context_menu_link(name, url, options={})
