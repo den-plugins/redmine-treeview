@@ -19,7 +19,6 @@
     <% issues.each do |issue| -%>
       <%= render :partial => 'treeview/issue', :locals => {:issue => issue, :query => query} %>
     <% end -%>
-    <script> stripe('issueslist'); </script>
   </tbody>
 </table>
 <% end -%>
@@ -28,5 +27,7 @@
 <script>
   jQuery(document).ready(function(){
     jQuery("#issueslist").treeTable({ treeColumn: <%= subject_col %> });
+    stripe('issueslist');
+    jQuery(".expander").click(function(){ stripe('issueslist') });
   });
 </script>

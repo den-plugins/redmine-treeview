@@ -1,7 +1,7 @@
 function transfer_task(id, type){
   var subtask = jQuery("#s_" + id),
       hasParent = subtask.attr("class").match(/child-of-s_\d+/),
-      data = "<tr id='transferred_" + id + "'>" + subtask.html() + "</tr>",
+      data = "<tr id='transferred_" + id + "' class='odd issue'>" + subtask.html() + "</tr>",
       childId = id,
       parentDOMID = (hasParent ? ("#transferred_" + hasParent[0].match(/\d+/)) : null),
       after = ((hasParent && (jQuery(parentDOMID).length != 0))? parentDOMID : "tr:last");
@@ -18,11 +18,11 @@ function transfer_task(id, type){
     while(hasParent){
       var parentId = hasParent[0].match(/\d+/),
             subtask2 = jQuery("#s_" + parentId),
-            data2 = "<tr id='transferred_" + parentId + "'>" + subtask2.html() + "</tr>";
+            data2 = "<tr id='transferred_" + parentId + "' class='odd issue'>" + subtask2.html() + "</tr>";
       if(jQuery("#transferred_" + parentId).length == 0){
         jQuery(data2).insertBefore("#transfer_table_" + type + " #transferred_" + childId).find(".small").remove();
         if(jQuery("#transferred_" + parentId).find('input').length == 0){
-          jQuery("#transferred_" + parentId).append("<input type='hidden' name='transferred_subtasks[]' value='"+ parentId +"'>");
+          jQuery("#transferred_" + parentId).append("<input type='hidden' name='parent_tasks[]' value='"+ parentId +"'>");
         }
         hasParent = subtask2.attr("class").match(/child-of-s_\d+/);
         childId= parentId;
@@ -31,6 +31,8 @@ function transfer_task(id, type){
       }
     }
   }
+  stripe('splittable_list');
+  stripe("transfer_table_" + type);
 }
 
 function transfer_descendants(descendants, type){
