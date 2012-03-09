@@ -282,17 +282,13 @@ class TreeviewController < IssuesController
         issue.assigned_to = assigned_to if assigned_to || params[:assigned_to_id] == 'none'
         issue.category = category if category || params[:category_id] == 'none'
         issue.fixed_version = fixed_version if fixed_version || params[:fixed_version_id] == 'none'
-        if issue.feature?
-          unless issue.children.nil? || issue.children.empty?
-            issue.children.each do |child_issue|
-              child_issue.update_attribute(:fixed_version_id, fixed_version.id)
-            end
-          end
-        end
         issue.start_date = params[:start_date] unless params[:start_date].blank?
         issue.due_date = params[:due_date] unless params[:due_date].blank?
         issue.done_ratio = params[:done_ratio] unless params[:done_ratio].blank?
         issue.custom_field_values = custom_field_values if custom_field_values && !custom_field_values.empty?
+
+        check_child_issue(issue, fixed_version)  if issue.feature?
+
         call_hook(:controller_issues_bulk_edit_before_save, { :params => params, :issue => issue })
         # Don't save any change to the issue if the user is not authorized to apply the requested status
         unless (status.nil? || (issue.status.new_status_allowed_to?(status, current_role, issue.tracker) && issue.status = status)) && issue.save
@@ -488,5 +484,14 @@ class TreeviewController < IssuesController
     add_defaults
     @query.column_names = params[:column_names] if params[:column_names]
     session[:us_query][:column_names] = @query.column_names
+  end
+
+  def check_child_issue(child_issue, fixed_version)
+    unless child_issue.children.nil? || child_issue.children.empty?
+      child_issue.children.each do |sub|
+        sub.update_attribute(:fixed_version_id, fixed_version.id)
+        check_child_issue(sub, fixed_version)
+      end
+    end
   end
 end
