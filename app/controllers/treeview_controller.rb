@@ -282,6 +282,13 @@ class TreeviewController < IssuesController
         issue.assigned_to = assigned_to if assigned_to || params[:assigned_to_id] == 'none'
         issue.category = category if category || params[:category_id] == 'none'
         issue.fixed_version = fixed_version if fixed_version || params[:fixed_version_id] == 'none'
+        if issue.feature?
+          unless issue.children.nil? || issue.children.empty?
+            issue.children.each do |child_issue|
+              child_issue.update_attribute(:fixed_version_id, fixed_version.id)
+            end
+          end
+        end
         issue.start_date = params[:start_date] unless params[:start_date].blank?
         issue.due_date = params[:due_date] unless params[:due_date].blank?
         issue.done_ratio = params[:done_ratio] unless params[:done_ratio].blank?
