@@ -32,7 +32,7 @@
     <%= link_to l(:button_save), {}, :onclick => "$('query_form').submit(); return false;", :class => 'icon icon-save' %>
     <% end %>
     <span class="buttons icon" style="float: right; cursor: pointer;">
-      <a onclick="toggleAll('issueslist');">Expand/Collapse All</a></span>
+      <a onclick="toggleAll('issueslist');" id="toggle-all-expander-button">Expand/Collapse All</a></span>
     </p>
     <% end %>
 <% else %>

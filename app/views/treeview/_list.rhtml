@@ -29,5 +29,6 @@
     jQuery("#issueslist").treeTable({ treeColumn: <%= subject_col %> });
     stripe('issueslist');
     jQuery(".expander").click(function(){ stripe('issueslist') });
+    jQuery("#toggle-all-expander-button").click(function(){ stripe('issueslist') });
   });
 </script>
