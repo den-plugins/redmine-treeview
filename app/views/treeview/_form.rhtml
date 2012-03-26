@@ -67,8 +67,9 @@
 <%= render :partial => 'form_custom_fields' %>
 </div>
 
-<%# if @issue.new_record? %>
+<% if @issue.new_record? %>
 <p><label><%=l(:label_attachment_plural)%></label><%= render :partial => 'attachments/form' %></p>
+<% end %>
 <p>
   <% if (params[:issue] and params[:issue][:tracker_id] == "2") or params[:tracker_id] == "2" or @issue.feature? %>
     <% predef_tasks = @issue.predef_tasks %>
@@ -82,7 +83,6 @@
     <% end %>
   <% end %>
 </p>
-<%# end %>
 
 <% if @issue.new_record? && User.current.allowed_to?(:add_issue_watchers, @project) -%>
 <p><label><%= l(:label_issue_watchers) %></label>

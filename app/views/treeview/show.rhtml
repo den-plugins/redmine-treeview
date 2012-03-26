@@ -140,7 +140,7 @@ end %>
 <% if @journals.any? %>
 <div id="history">
 <h3><%=l(:label_history)%></h3>
-<%= render :partial => 'issues/history', :locals => { :journals => @journals } %>
+<%= render :partial => 'treeview/history', :locals => { :journals => @journals } %>
 </div>
 <% end %>
 <div style="clear: both;"></div>
