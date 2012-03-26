@@ -97,7 +97,7 @@ class TreeviewController < IssuesController
       nxt_issue = (index+1 < issues.size) ? issues[index+1] : 0
     end
     respond_to do |format|
-      format.html { render :template => 'issues/show.rhtml', :locals => {:prv => prv_issue, :nxt => nxt_issue}, :layout => !request.xhr? } # for feature #8364 - added locals
+      format.html { render :template => 'treeview/show.rhtml', :locals => {:prv => prv_issue, :nxt => nxt_issue}, :layout => !request.xhr? } # for feature #8364 - added locals
       format.atom { render :action => 'changes', :layout => false, :content_type => 'application/atom+xml' }
       format.pdf  { send_data(issue_to_pdf(@issue), :type => 'application/pdf', :filename => "#{@project.identifier}-#{@issue.id}.pdf") }
     end
