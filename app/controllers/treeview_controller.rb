@@ -36,19 +36,18 @@ class TreeviewController < IssuesController
         issue if (issue.has_parent? and @tmp_issues.include?(issue.parent_issue))
       end
       @child_issues.delete_if {|c| @filtered_issues.include? c}
-      @child_issues_clone = @child_issues
-      
+
       @issue_count = @filtered_issues.count
       @issue_pages = Paginator.new self, @issue_count, limit, params['page']
       offset = @issue_pages.current.offset
       (offset ... (offset + limit)).each do |i|
-       break if @filtered_issues[i].nil?
-	   	if params[:set_filter] || session[:not_first_load]
+        break if @filtered_issues[i].nil?
+	   	  if params[:set_filter] || session[:not_first_load]
       	 	@issues << @filtered_issues[i]
-			session[:not_first_load] = "yes"
-		end
+			    session[:not_first_load] = "yes"
+		    end
       end
-
+      
       respond_to do |format|
         format.html { render :template => 'treeview/index.rhtml', :layout => !request.xhr? }
         format.atom { render_feed(@issues, :title => "#{@project || Setting.app_title}: #{l(:label_issue_plural)}") }

@@ -45,7 +45,7 @@ module TreeviewHelper
   
   def issue_class(issue, children)
     iclass = "hascontextmenu #{css_issue_classes(issue)} odd " +
-                    (issue.parent ? "child-of-issue-#{issue.parent_issue.id} " : "" )
+                    ((issue.parent && (@tmp_issues).include?(issue.parent_issue)) ? "child-of-issue-#{issue.parent_issue.id} " : "" )
   end
   
   def display_option(issue)
