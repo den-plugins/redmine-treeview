@@ -142,6 +142,7 @@ class TreeviewController < IssuesController
       @issue.status = (@allowed_statuses.include? requested_status) ? requested_status : default_status
 
       if @issue.save
+          session[:project_issue_ids], session[:non_project_issue_ids] = @issue.update_session_params(session[:project_issue_ids], session[:non_project_issue_ids])
         if params[:relation]
           @relation = IssueRelation.new(params[:relation])
           if !params[:relation][:issue_from_id].blank?
@@ -236,6 +237,7 @@ class TreeviewController < IssuesController
 
         if (@time_entry.hours.nil? || @time_entry.valid?) && @issue.save
           # Log spend time
+          session[:project_issue_ids], session[:non_project_issue_ids] = @issue.update_session_params(session[:project_issue_ids], session[:non_project_issue_ids])
           if User.current.allowed_to?(:log_time, @project)
             @time_entry.save
             if !@time_entry.hours.nil?
@@ -302,6 +304,8 @@ class TreeviewController < IssuesController
         unless (status.nil? || (issue.status.new_status_allowed_to?(status, current_role, issue.tracker) && issue.status = status)) && issue.save
           # Keep unsaved issue ids to display them in flash error
           unsaved_issue_ids << issue.id
+        else
+          session[:project_issue_ids], session[:non_project_issue_ids] = issue.update_session_params(session[:project_issue_ids], session[:non_project_issue_ids])
         end
       end
       if unsaved_issue_ids.empty?
@@ -391,6 +395,7 @@ class TreeviewController < IssuesController
               sissue = s.issue_to
               sissue.fixed_version = @split_version
               sissue.save
+              session[:project_issue_ids], session[:non_project_issue_ids] = sissue.update_session_params(session[:project_issue_ids], session[:non_project_issue_ids])
               subtask = IssueRelation.new()
               subtask.issue_from = @split_feature
               subtask.issue_to = s.issue_to
