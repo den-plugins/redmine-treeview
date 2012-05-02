@@ -213,6 +213,7 @@ class TreeviewController < IssuesController
     @default = @issue.accounting.id
     @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
     @time_entry = TimeEntry.new
+    @update_options = {'Internal (DEN only)' => 1, 'Include Mystic' => 2}
 
     @notes = params[:notes]
     journal = @issue.init_journal(User.current, @notes)
