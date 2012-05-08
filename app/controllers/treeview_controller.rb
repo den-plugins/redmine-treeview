@@ -27,7 +27,7 @@ class TreeviewController < IssuesController
       end
       
       @tmp_issues = Issue.find :all, :order => sort_clause,
-                                     :include => [:assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version],
+                                     :include => [:assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version, :item],
                                      :conditions => @query.statement
       
       @issues, @child_issues = [], []
@@ -44,6 +44,7 @@ class TreeviewController < IssuesController
         break if @filtered_issues[i].nil?
 	   	  if params[:set_filter] || session[:not_first_load]
       	 	@issues << @filtered_issues[i]
+          @issues = @issues.sort_by { |p| (p.item.position.nil? ? 100 : p.item.position) }
 			    session[:not_first_load] = "yes"
 		    end
       end
