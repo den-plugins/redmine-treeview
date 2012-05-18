@@ -29,7 +29,14 @@ class TreeviewController < IssuesController
       @tmp_issues = Issue.find :all, :order => sort_clause,
                                      :include => [:assigned_to, :status, :tracker, :project, :priority, :category, :fixed_version, :item],
                                      :conditions => @query.statement
-      
+      if params[:sort]
+        sort = params[:sort].split ','
+        case sort[0]
+          when "status" then @tmp_issues = @tmp_issues.sort_by{|i| i.status.name.downcase}
+          when "status:desc" then @tmp_issues = @tmp_issues.sort_by{|i| i.status.name.downcase}.reverse
+        end
+      end
+
       @issues, @child_issues = [], []
       @filtered_issues = @tmp_issues.reject do |issue|
         @child_issues << issue if issue.has_parent?
