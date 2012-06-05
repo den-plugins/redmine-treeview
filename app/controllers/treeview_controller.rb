@@ -2,7 +2,7 @@ class TreeviewController < IssuesController
   include FaceboxRender
   include TreeviewHelper
 
-  before_filter :find_issue, :only => [:show, :edit, :reply, :split, :transfer]
+  before_filter :find_issue, :only => [:show, :edit, :reply, :split, :transfer, :carry_over]
   before_filter :find_issues, :only => [:show, :bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:new, :update_form, :preview]
   skip_filter :authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new]
