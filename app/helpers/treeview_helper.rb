@@ -59,6 +59,10 @@ module TreeviewHelper
   def splittable?(issue)
     issue.feature? and issue.children.any?
   end
+
+  def carry_over?(issue)
+      issue.feature? and issue.children.any?
+  end
   
   def split_subtask_class(issue)
     iclass = "odd #{css_issue_classes(issue)} " +

@@ -194,7 +194,8 @@ class TreeviewController < IssuesController
             :move => (@project && User.current.allowed_to?(:move_issues, @project)),
             :copy => (@issue && @project.trackers.include?(@issue.tracker) && User.current.allowed_to?(:add_issues, @project)),
             :delete => (@project && User.current.allowed_to?(:delete_issues, @project)),
-            :split => (@project && User.current.allowed_to?(:split_issues, @project))
+            :split => (@project && User.current.allowed_to?(:split_issues, @project)),
+            :carry_over => (@project && User.current.allowed_to?(:carry_over_issues, @project))
             }
 
      if @project
@@ -450,6 +451,13 @@ class TreeviewController < IssuesController
     end
     @issues.each(&:destroy)
     redirect_to :controller => 'treeview', :action => 'index', :project_id => @project
+  end
+
+  def carry_over
+    respond_to do |format|
+          format.html
+          format.js { render_to_facebox :template => "treeview/carry_over" }
+    end
   end
     
   private
