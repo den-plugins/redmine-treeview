@@ -69,6 +69,12 @@ module TreeviewHelper
                     ((issue.parent and !issue.parent_issue.eql?(@issue)) ? "child-of-s_#{issue.parent_issue.id}" : "") +
                     (issue.children.any? ? " is_parent" : "")
   end
+
+  def carry_over_subtask_class(issue)
+    iclass = "odd #{css_issue_classes(issue)} " +
+                    ((issue.parent and !issue.parent_issue.eql?(@issue)) ? "child-of-s_#{issue.parent_issue.id}" : "") +
+                    (issue.children.any? ? " is_parent" : "")
+  end
   
   def subtasks_for_split(feature)
     (feature == @issue) ? [] : feature.children

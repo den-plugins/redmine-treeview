@@ -454,6 +454,7 @@ class TreeviewController < IssuesController
   end
 
   def carry_over
+    @subtasks = @issue.children.select {|c| !c.closed?}
     respond_to do |format|
           format.html
           format.js { render_to_facebox :template => "treeview/carry_over" }

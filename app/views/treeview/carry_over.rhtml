@@ -1,1 +1,38 @@
-<div><p>carry over</p></div>
+<div id="carry-over-popup">
+  <%= error_messages_for 'issue' %>
+  <div class="carryovertcontentleft">
+    <div style="margin-bottom: 15px"><b>ORIGINAL</b></div>
+    <div class="carry-over-label"><%= l(:field_fixed_version) %></div><div class="carry-over-value"><%= @issue.fixed_version%></div>
+    <div class="carry-over-label"><%= l(:default_tracker_feature) %></div><div class="carry-over-value"><%= @issue.subject %></div>
+    <div class="carry-over-label"><%= l(:field_description)%></div><div class="carry-over-value" style="height: 100px"><%= textilizable @issue.description %></div>
+    <div class="carry-over-label"><%= l(:field_priority) %></div><div class="carry-over-value"><%= @issue.priority %></div>
+    <div class="table-container">
+      <table id="splittable_list" class="list issues">
+        <thead>
+          <tr>
+            <th style="width: 11%"><%= l(:label_tracker) %></th>
+            <th>Name</th>
+            <th style="width: 14%">Status</th>
+            <th style="width: 7%">Effort</th>
+            <th style="width: 5%"></th>
+          </tr>
+        </thead>
+        <tbody>
+        <% if @subtasks.any? %>
+          <% @subtasks.each do |subtask| %>
+            <%= render :partial => "treeview/carry_over_issue", :locals => {:subtask => subtask} %>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="5">No task/s found for this user story or feature.</td>
+          </tr>
+        <% end %>
+        </tbody>
+      </table>
+      </div>
+  </div>
+  <div class="carryovercontentright">
+    <div style="margin-bottom: 15px"><b>NEW</b></div>
+  </div>
+  <div style="clear: both"></div>
+</div>
