@@ -4,6 +4,10 @@ module TreeviewHelper
     @split_features_list.empty? ? [] : @split_features_list.collect {|f| [f.subject, f.id]}
   end
 
+  def collection_of_carry_over_features
+    @carry_over_features_list.empty? ? [] : @carry_over_features_list.collect {|f| [f.subject, f.id]}
+  end
+
   def collection_of_versions
     @project.versions.empty? ? [] : @project.versions.sort.collect {|v| [v.name, v.id]}
   end
@@ -80,6 +84,10 @@ module TreeviewHelper
     (feature == @issue) ? [] : feature.children
   end
 
+  def subtasks_for_carry_over(feature)
+      (feature == @issue) ? [] : feature.children
+  end
+
   def tree_column_header(column)
     if column.sortable
       sort_header_tag(column.name.to_s,
@@ -98,12 +106,28 @@ module TreeviewHelper
       @split_feature.description
     end
   end
+
+  def value_for_carry_over_description
+    if @carry_over_feature.new_record?
+      @carry_over_features_list.empty? ? "" : @carry_over_features_list.first.description
+    else
+      @carry_over_feature.description
+    end
+  end
   
   def value_for_priority_id_selected
     if @split_feature.new_record?
       @split_features_list.empty? ? "" : @split_features_list.first.priority_id
     else
       @split_feature.priority_id
+    end
+  end
+
+  def value_for_carry_over_priority_id_selected
+    if @carry_over_feature.new_record?
+      @carry_over_features_list.empty? ? "" : @carry_over_features_list.first.priority_id
+    else
+      @carry_over_feature.priority_id
     end
   end
 end

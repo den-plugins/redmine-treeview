@@ -454,7 +454,11 @@ class TreeviewController < IssuesController
   end
 
   def carry_over
+    @priorities = Enumeration.priorities
     @subtasks = @issue.children.select {|c| !c.closed?}
+    @carry_over_feature = (params[:carry_over_to] && params[:edit]) ? @project.issues.find(params[:carry_over_to][:feature_id]) : Issue.new
+    @carry_over_version = params[:carry_over_to] ? Version.find(params[:carry_over_to][:fixed_version_id]) : @issue.fixed_version
+    @carry_over_features_list = @carry_over_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
     respond_to do |format|
           format.html
           format.js { render_to_facebox :template => "treeview/carry_over" }
