@@ -51,3 +51,32 @@ table#issueslist.treeTable tr td .expander-p {background-image: url('../images/c
 #split-ajax-indicator span {background-image: url(/images/loading.gif); background-repeat: no-repeat; top: 49%; left: 41%; padding-left: 25px;position: relative;}
 
 .issue-split-form {display: block;}
+
+
+/****** CARRY OVER ********/
+
+#carry-over-popup .carryovercontentleft{float:left; width:49%;}
+#carry-over-popup .carryovercontentright{float:right; width:49%;}
+#carry-over-popup .carryovercontentleft div.carry-over-label {display: block; float: left; width: 25%; margin: 3px 0;text-overflow: CLIP;height: 15px;}
+#carry-over-popup .carryovercontentleft div.carry-over-value {display: block; float: left; width: 72%; background-color: #ddd; margin: 3px 0; padding: 4px; min-height: 15px; overflow: auto;
+                                                                                   border-radius: 5px; -webkit-border-radius: 2px; -moz-border-radius: 2px;}
+#carry-over-popup .carryovercontentleft div.carry-over-value img {width: 100%;}
+#carry-over-popup div.table-container {margin: 10px 0; float: left; width: 99%; max-height: 200px; overflow: auto;}
+
+#carry-over-popup .carryovercontentright div.carry-over-options {width: 80%; min-width: 65%; min-height: 15px; float: left; margin: 3px; }
+#carry-over-popup .carryovercontentright select { height: 22px;}
+#carry-over-popup .carryovercontentright div.carry-over-extra {font-size: 8px; float: left; width: 17%; overflow: hidden; margin-top: 11px;}
+#carry-over-popup .carryovercontentright div.carry-over-options.description {width: 100%; height: 106px; min-height: 100px;}
+#carry-over-popup .carryovercontentright div.carry-over-options .floating {width: 200px; float: left; margin-left: 20px}
+
+#facebox #carry-over-popup table { font-size: 10px; table-layout: fixed; height:50px; overflow: auto; border: 0;}
+#facebox #carry-over-popup table tr th, #facebox #carry-over-popup table tr td {white-space: normal; text-align: center; height: 22px; vertical-align: middle;}
+#facebox #carry-over-popup table tr td.left {text-align: left;}
+#facebox #carry-over-popup table tr td.ssubject {white-space: nowrap; overflow: hidden;}
+#facebox #carry-over-popup table tr span.marquish {position: relative; left: 0; }
+
+#carry-over-ajax-indicator {background-color: #ddd; position: absolute; width: 47%; height: 74%; opacity: 0.5; font-weight: bold;
+                                        border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; padding: 2px;}
+#carry-over-ajax-indicator span {background-image: url(/images/loading.gif); background-repeat: no-repeat; top: 49%; left: 41%; padding-left: 25px;position: relative;}
+
+.issue-carry-over-form {display: block;}

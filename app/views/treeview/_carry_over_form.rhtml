@@ -32,7 +32,7 @@
     <%= select 'carry_over_to', 'fixed_version_id', collection_of_versions, {:selected => @carry_over_version.id } %>
   </div>
   <div class="carry-over-options" >
-    <%= text_field 'carry_over_to', 'subject', :value => "#{h @issue.subject} - 2", :style => "width: 99%" %>
+    <%= text_field 'carry_over_to', 'subject', :value => "#{h @issue.subject}", :style => "width: 99%" %>
   </div>
   <div class="carry-over-extra">
 
@@ -42,9 +42,6 @@
   </div>
   <div class="carry-over-options" style="width: 100%">
     <%= select 'carry_over_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @issue.priority_id }%>
-  </div>
-  <div class="carry-over-options" style="width: 100%; margin-top: 10px;">
-    <%= display_predefined_tasks(@issue) %>
   </div>
   <%= render :partial => "treeview/carry_over_subtasks", :locals => {:subtasks => [], :type => "new"}%>
   <div class="carry-over-options" style="width: 100%">
