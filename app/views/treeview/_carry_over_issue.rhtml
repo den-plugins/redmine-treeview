@@ -3,7 +3,11 @@
   <td class="left ssubject"><span class="marquish"><%= subtask.subject %></span></td>
   <td><%= subtask.status.name %></td>
   <td><%=  %></td>
-  <td class="small"><%= subtask.can_be_carried_over? ? image_tag('arrow_from.png', :width => 15) : "" %></td>
+  <td class="small ">
+    <% if subtask.can_be_carried_over? %>
+      <a class = "transfer_button from"></a>
+    <% end %>
+  </td>
 </tr>
 
 <% children = subtask.children %>

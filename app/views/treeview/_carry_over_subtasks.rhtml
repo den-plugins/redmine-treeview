@@ -6,6 +6,7 @@
       <th>Name</th>
       <th style="width: 14%">Status</th>
       <th style="width: 9%">Effort</th>
+      <th style="width: 5%"></th>
     </tr>
   </thead>
   <tbody>
@@ -21,7 +22,7 @@
     <% reset_cycle 'subtasks' %>
   <% else %>
     <tr id="no_tasks_<%= type %>">
-      <td colspan="4">No task/s found for this user story or feature.</td>
+      <td class="no-task-transfer" colspan="4">No task/s found for this user story or feature.</td>
     </tr>
   <% end %>
   </tbody>
