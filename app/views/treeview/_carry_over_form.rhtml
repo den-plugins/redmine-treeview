@@ -1,7 +1,7 @@
 <% remote_form_for  :issue, @carry_over_feature, :url => {:action => 'carry_over', :id => @issue, :edit => 1},
                                        :html => {:id => 'issue-carry-over-form-edit', :class => 'issue-carry-over-form', :multipart => true, :style => "display: #{@carry_over_feature.new_record? ? 'none' : 'block' }" } do %>
   <div class="carry-over-options" style="width: 100%">
-    <%= select 'carry_over_to', 'fixed_version_id', collection_of_versions, {:selected => @carry_over_version.id}, :onchange => "" %>
+    <%= select 'carry_over_to', 'fixed_version_id', collection_of_versions, {:selected => collection_of_versions.last}, :onchange => "" %>
   </div>
   <div class="carry-over-options" >
     <%= select 'carry_over_to', 'feature_id', collection_of_carry_over_features, {:selected => @carry_over_feature.id}, :style => "width: 100%", :onchange => "" %>

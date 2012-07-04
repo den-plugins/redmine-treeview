@@ -8,61 +8,83 @@ module CarryOverHelper
     issue.attributes = self.create_attributes(carry_over, issue)
     if issue.save and carries and carries!=""
       carries = carries.split(",").map{|x| Issue.find(x.to_i)}
-      arr = original.children
-      ref = {}
+      arr = self.get_issues_to_be_carried(original.children, carries)
       flag = arr.empty?
       while !flag
-        puts arr.map(&:id)
         arr.each do |c|
-          if c.parent.issue_from == original and (!c.children.empty? or carries.include?(c)) 
-            ref = self.create_issue(c, issue, ref, false)
-          elsif !c.children.empty? or carries.include? c
-            ref = self.create_issue(c, ref[:"#{c.parent.issue_from.id}"], ref, true) 
+          if c.parent.issue_from != original
+            arr << c.parent.issue_from
+            self.create_issue(c, c.parent.issue_from, true, issue.fixed_version)
+          else
+            self.create_issue(c, issue, false, issue.fixed_version)
           end
-          arr += c.children
           arr.delete c
         end
         flag = arr.empty?
       end
-      #original.status = IssueStatus.find_by_name("Carried Over")
-      #original.save
+      original = Issue.find params[:id]
+      original.attributes = {"status_id" => IssueStatus.find_by_name("Carried Over").id}
+      original.save
     end
   end
 
-  def self.create_issue(issue, parent, hash, create_parent)
-    begin
+  def self.get_issues_to_be_carried(arr, carries)
+    ret = []
+    flag = arr.empty?
+    while !flag
+      arr.each do |x|
+        arr.delete x
+        arr += x.children
+        ret << x if carries.include?(x)
+      end
+      flag = arr.empty?
+    end
+    ret
+  end
+  
+  def self.create_issue(issue, parent, create_parent, version)
+    exist_issue = Issue.find(:all, :conditions=>{:subject=>"#{issue.subject.gsub(/(\[CO\])+/, "")}[CO]", 
+                                                 :description=>issue.description,
+                                                 :fixed_version_id=>version.id}).select{|x| x.status.name == "Carried Over"}.first
+    exist_parent = Issue.find(:all, :conditions=>{:subject=>"#{parent.subject.gsub(/(\[CO\])+/, "")}[CO]", 
+                                                  :description=>parent.description,
+                                                  :fixed_version_id=>version.id}).select{|x| x.status.name == "Carried Over"}.first
+    if !exist_issue
       new = issue.custom_clone
-      new.subject.gsub!(/(\[CO\])+/, "[CO]")
-      new.attributes = {"custom_field_values" => self.create_custom_fields(issue.custom_values)}
+      new.subject = new.subject.gsub(/(\[CO\])+/, "") + "[CO]"
+      new.attributes = {"fixed_version_id" => version.id,
+                        "custom_field_values" => self.create_custom_fields(issue.custom_values)}
       if new.save
-        #issue.status = IssueStatus.find_by_name("Carried Over")
-        #issue.save
+        issue = Issue.find(issue.id)
+        issue.status = IssueStatus.find_by_name("Carried Over")
+        issue.save
       end
-      exist = Issue.find(:all, :conditions=>{:subject=>parent.subject, 
-                                             :description=>parent.description,
-                                             :tracker_id=>parent.tracker_id,
-                                             :priority_id=>parent.priority_id}).sort_by(&:created_on).last
-      if exist.id == parent.id and create_parent
-        np = parent.custom_clone
-        np.attributes = {"custom_field_values" => self.create_custom_fields(parent.custom_values)}
-        np.save
-        #parent.status = IssueStatus.find_by_name("Carried Over")
-        #parent.save
-      else
-        np = exist
+    else
+      new = exist_issue
+    end
+    
+    if !exist_parent and create_parent
+      np = parent.custom_clone
+      np.subject = np.subject.gsub(/(\[CO\])+/, "") + "[CO]"
+      np.attributes = {"fixed_version_id" => version.id,
+                       "custom_field_values" => self.create_custom_fields(parent.custom_values)}
+      if np.save
+        parent = Issue.find(parent.id)
+        parent.status = IssueStatus.find_by_name("Carried Over")
+        parent.save
       end
-      new_parent = np
-      
+    elsif exist_parent and create_parent
+      np = exist_parent
+    else
+      np = parent
+    end
+    
+    if new and np
       rel = IssueRelation.new
-      rel.issue_from = new_parent
+      rel.issue_from = np
       rel.issue_to = new
       rel.relation_type = issue.parent.relation_type
       rel.save
-      hash[:"#{parent.id}"] = parent
-      hash[:"#{issue.id}"] = issue
-      hash
-    #rescue
-      #hash
     end
   end
   
