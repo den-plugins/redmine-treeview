@@ -8,22 +8,25 @@ var CarryOver = {
   
   buttons: function() {
     j(".transfer_button").live("click", function(){
+      var row = j(j(this).parents("tr")[0]),
+          origin_table = j("#splittable_list"),
+          transfer_table = j("#transfer_table_new"),
+          carried_issues = j("#carry_over_to_issues"),
+          issues = (carried_issues.val() != "") ? carried_issues.val().split(",") : [];
       if(j(this).hasClass("from")) {
-        var row = j(this).parents("tr")[0];
-        var table = j("#transfer_table_new");
         j("#no_tasks_new").hide();
-        j(row).appendTo(table.find("tbody"));
+        row.appendTo(transfer_table.find("tbody"));
         j(this).removeClass("from").addClass("to");
+        issues.push(row.attr("id").replace("s_", ""));
       }
       else if(j(this).hasClass("to")) {
-        var row = j(this).parents("tr")[0];
-        var origin_table = j("#splittable_list");
-        var transfer_table = j("#transfer_table_new");
-        j(row).appendTo(origin_table.find("tbody"));
+        row.appendTo(origin_table.find("tbody"));
         j(this).addClass("from").removeClass("to");
-        if(transfer_table.find("tbody").children().length==0)
+        issues = j.grep(issues, function(val) { return val != row.attr("id").replace("s_", ""); });
+        if(transfer_table.find("tbody").children().length==1)
           j("#no_tasks_new").show();
       }
+      carried_issues.val(issues);
     });
   }
 }
@@ -31,4 +34,3 @@ var CarryOver = {
 j(document).ready(function(){
   CarryOver.init();
 });
-
