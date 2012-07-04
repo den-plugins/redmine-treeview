@@ -86,4 +86,4 @@ table#issueslist.treeTable tr td .expander-p {background-image: url('../images/c
 .transfer_button {width:15px; -webkit-background-size:cover; display:block; height:10px}
 .transfer_button:hover {cursor: pointer; cursor: hand}
 .transfer_button.from {background: url('/images/arrow_from.png') no-repeat; }
-.transfer_button.to {background: url('/images/arrow_to.png') no-repeat;}i
+.transfer_button.to {background: url('/images/arrow_to.png') no-repeat;}
