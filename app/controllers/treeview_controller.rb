@@ -52,6 +52,7 @@ class TreeviewController < IssuesController
 	   	  if params[:set_filter] || session[:not_first_load]
       	 	@issues << @filtered_issues[i]
           @issues = @issues.sort_by { |p| (p.item.position.nil? ? 100 : p.item.position) } if params[:sort].nil?
+          @issues = @issues.sort_by(&:priority).reverse
 			    session[:not_first_load] = "yes"
 		    end
       end
