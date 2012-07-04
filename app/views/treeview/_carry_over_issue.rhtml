@@ -2,7 +2,10 @@
   <td><%= subtask.tracker %></td>
   <td class="left ssubject"><span class="marquish"><%= subtask.subject %></span></td>
   <td><%= subtask.status.name %></td>
-  <td><%=  %></td>
+  <td><%= subtask.estimated_hours %></td>
+  <td><%= subtask.done_ratio %></td>
+  <td><%= subtask.time_spent %></td>
+  <td><%= subtask.remaining_effort.to_f %></td>
   <td class="small ">
     <% if subtask.can_be_carried_over? %>
       <a class = "transfer_button from"></a>

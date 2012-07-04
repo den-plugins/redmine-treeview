@@ -9,7 +9,7 @@ module TreeviewHelper
   end
 
   def collection_of_versions
-    @project.versions.empty? ? [] : @project.versions.sort.collect {|v| [v.name, v.id]}
+    @project.versions.empty? ? [] : @project.versions.reject{|x| x == @issue.fixed_version}.sort.collect {|v| [v.name, v.id]}
   end
   
   def display_predefined_tasks(issue)

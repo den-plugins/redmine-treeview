@@ -22,7 +22,7 @@ var CarryOver = {
       else if(j(this).hasClass("to")) {
         row.appendTo(origin_table.find("tbody"));
         j(this).addClass("from").removeClass("to");
-        issues = j.grep(issues, function(val) { return val != row.attr("id"); });
+        issues = j.grep(issues, function(val) { return val != row.attr("id").replace("s_", ""); });
         if(transfer_table.find("tbody").children().length==1)
           j("#no_tasks_new").show();
       }
@@ -34,4 +34,3 @@ var CarryOver = {
 j(document).ready(function(){
   CarryOver.init();
 });
-

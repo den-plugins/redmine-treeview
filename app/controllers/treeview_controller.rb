@@ -455,7 +455,7 @@ class TreeviewController < IssuesController
   end
 
   def carry_over
-    CarryOverHelper.create_carried_issue(params) if params[:carry_over_to] 
+    CarryOverHelper.carry_over(params) if params[:carry_over_to]
     @priorities = Enumeration.priorities
     @subtasks = @issue.children.select {|c| !c.closed?}
     @carry_over_feature = (params[:carry_over_to] && params[:edit]) ? @project.issues.find(params[:carry_over_to][:feature_id]) : Issue.new
