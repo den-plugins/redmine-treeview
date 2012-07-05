@@ -84,6 +84,10 @@ table#issueslist.treeTable tr td .expander-p {background-image: url('../images/c
 .issue-carry-over-form {display: block;}
 
 .transfer_button {width:15px; -webkit-background-size:cover; display:block; height:10px}
-.transfer_button:hover {cursor: pointer; cursor: hand}
+.transfer_button:hover, a {cursor: pointer; cursor: hand}
 .transfer_button.from {background: url('/images/arrow_from.png') no-repeat; }
 .transfer_button.to {background: url('/images/arrow_to.png') no-repeat;}
+
+.error_message, #new_iteration {font-weight:normal; font-size:95%}
+.error_message {color:red; font-style:italic}
+#new_iteration {color: #666}

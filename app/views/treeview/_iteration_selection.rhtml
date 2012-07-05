@@ -1,0 +1,4 @@
+<%= select 'carry_over_to', 'fixed_version_id', collection_of_versions, {:selected => @carry_over_version.id } %>
+<a id="new_iteration">New Iteration</a>
+<%= text_field_tag 'project_id', params[:project_id], :class=>"hidden" %>
+<%= text_field_tag 'issue_id', params[:id], :class=>"hidden" %>

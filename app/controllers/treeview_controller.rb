@@ -8,7 +8,7 @@ class TreeviewController < IssuesController
   skip_filter :authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new]
   before_filter :treeview_authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new]
   before_filter :authorize, :except => [:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu, :new_remote, :edit_remote, :update_status_remote,
-                                        :rollback_credit, :transfer]
+                                        :rollback_credit, :transfer, :create_iteration]
 
   def index
     retrieve_query
@@ -196,7 +196,8 @@ class TreeviewController < IssuesController
             :copy => (@issue && @project.trackers.include?(@issue.tracker) && User.current.allowed_to?(:add_issues, @project)),
             :delete => (@project && User.current.allowed_to?(:delete_issues, @project)),
             :split => (@project && User.current.allowed_to?(:split_issues, @project)),
-            :carry_over => (@project && User.current.allowed_to?(:carry_over_issues, @project))
+            :carry_over => (@project && User.current.allowed_to?(:carry_over_issues, @project)),
+            :create_iteration => (@project && User.current.allowed_to?(:create_new_iteration, @project))
             }
 
      if @project
@@ -466,7 +467,18 @@ class TreeviewController < IssuesController
           format.js { render_to_facebox :template => "treeview/carry_over" }
     end
   end
-    
+  
+  def create_iteration
+    @project = Project.find_by_identifier(params[:project_id])
+    @issue = Issue.find(params[:id])
+    version = @project.versions.build(:name => params[:version])
+    version.save
+    @carry_over_version = version
+    respond_to do |format|
+      format.js {render :layout => false}
+    end
+  end
+
   private
   def treeview_authorize(action = params[:action])
     allowed = User.current.allowed_to?({:controller => 'issues', :action => action}, @project)

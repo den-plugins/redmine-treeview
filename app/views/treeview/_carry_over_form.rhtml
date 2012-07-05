@@ -1,35 +1,10 @@
-<% remote_form_for  :issue, @carry_over_feature, :url => {:action => 'carry_over', :id => @issue, :edit => 1},
-                                       :html => {:id => 'issue-carry-over-form-edit', :class => 'issue-carry-over-form', :multipart => true, :style => "display: #{@carry_over_feature.new_record? ? 'none' : 'block' }" } do %>
-  <div class="carry-over-options" style="width: 100%">
-    <%= select 'carry_over_to', 'fixed_version_id', collection_of_versions, {:selected => collection_of_versions.last}, :onchange => "" %>
-  </div>
-  <div class="carry-over-options" >
-    <%= select 'carry_over_to', 'feature_id', collection_of_carry_over_features, {:selected => @carry_over_feature.id}, :style => "width: 100%", :onchange => "" %>
-  </div>
-  <div class="carry-over-extra">
-    <a class="small" onclick="" style="cursor: pointer">Other Features</a>
-  </div>
-  <div class="carry-over-options description">
-    <%= text_area 'carry_over_to', 'description', :value => value_for_carry_over_description,
-                                                                          :style => "height: 99px; width: 98%; resize: none" %>
-  </div>
-  <div class="carry-over-options" style="width: 100%">
-    <%= select 'carry_over_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => value_for_carry_over_priority_id_selected} %>
-  </div>
-  <% cfeature = (@carry_over_features_list.empty? ? (@carry_over_feature) : (@carry_over_feature.new_record? ? @carry_over_features_list.first : @carry_over_feature)) %>
-  <div class="carry-over-options" style="width: 100%; margin-top: 10px;">
-    <%= display_predefined_tasks(cfeature) %>
-  </div>
-  <%= render :partial => "treeview/carry_over_subtasks", :locals => {:subtasks => subtasks_for_carry_over(cfeature), :type => "edit"}%>
-  <div class="carry-over-options" style="width: 100%;">
-    <%= submit_tag "Save", :id => "edit_carry_over_form_submit", :style => "float: right" %>
-  </div>
-<% end %>
-
-<% remote_form_for  :issue, Issue.new, :url => {:action => 'carry_over', :id => @issue},
+<% remote_form_for :issue, Issue.new, :url => {:action => 'carry_over', :id => @issue},
                                        :html => {:id => 'issue-carry-over-form-new', :class => 'issue-carry-over-form', :multipart => true, :style => "display: #{@carry_over_feature.new_record? ? 'block' : 'none' }"} do %>
-  <div class="carry-over-options" style="width: 100%">
-    <%= select 'carry_over_to', 'fixed_version_id', collection_of_versions, {:selected => @carry_over_version.id } %>
+  <div class="carry-over-options iteration" >
+    <%= render :partial => "iteration_selection" %>
+  </div>
+  <div class="carry-over-options create_iteration hidden">
+    <%= render :partial => "iteration_selection_form" %>
   </div>
   <div class="carry-over-options" >
     <%= text_field 'carry_over_to', 'subject', :value => "#{h @issue.subject}", :style => "width: 99%" %>
@@ -46,6 +21,6 @@
   <%= text_field 'carry_over_to', 'issues', :class=>"hidden" %>
   <%= render :partial => "treeview/carry_over_subtasks", :locals => {:subtasks => [], :type => "new"}%>
   <div class="carry-over-options" style="width: 100%">
-    <%= submit_tag "Save", :id => "new_carry_over_form_submit", :style => "float: right" %>
+    <%= submit_tag "Save", :id => "new_carry_over_form_submit", :style => "float: right", :disabled=>true%>
   </div>
 <% end %>

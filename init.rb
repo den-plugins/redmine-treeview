@@ -12,6 +12,7 @@ Redmine::Plugin.register :redmine_treeview do
     permission :issue_tracking, {:treeview => [:index]}, :public => true
     permission :split_issues, {:treeview => [:split]}
     permission :carry_over_issues, {:treeview => [:carry_over]}
+    permission :create_new_iteration, {:treeview => [:create_iteration]}
   end
   
   menu :project_menu, :treeview, {:controller => 'treeview', :action => 'index'}, :after => :backlogs, :caption => 'User Stories', :param => :project_id
