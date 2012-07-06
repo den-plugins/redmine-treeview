@@ -1,4 +1,5 @@
 <% filtered_children = issue.children.reject {|c| c unless @child_issues.include?(c)} %>
+<% filtered_children = filtered_children.sort_by(&:priority) %>
 
 <tr id="issue-<%= issue.id %>" class="<%= issue_class issue, filtered_children %>">
   <td class='checkbox'>
