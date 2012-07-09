@@ -52,7 +52,7 @@ module CarryOverHelper
       if new.save
         issue = Issue.find(issue.id)
         issue.status = IssueStatus.find_by_name("Carried Over")
-        issue.save
+        puts "issue #{issue.save}"
       end
     else
       new = exist_issue
@@ -66,7 +66,7 @@ module CarryOverHelper
       if np.save
         parent = Issue.find(parent.id)
         parent.status = IssueStatus.find_by_name("Carried Over")
-        parent.save
+        puts "parent #{parent.save}"
       end
     elsif exist_parent and create_parent
       np = exist_parent
@@ -79,7 +79,8 @@ module CarryOverHelper
       rel.issue_from = np
       rel.issue_to = new
       rel.relation_type = issue.parent.relation_type
-      rel.save
+      puts rel.inspect
+      puts "relationship #{rel.save}"
     end
   end
   
