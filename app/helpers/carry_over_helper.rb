@@ -12,7 +12,7 @@ module CarryOverHelper
       flag = arr.empty?
       while !flag
         arr.each do |c|
-          if c.parent.issue_from != original
+          if c.parent.issue_from_id != original.id
             arr << c.parent.issue_from
             self.create_issue(c, c.parent.issue_from, true, issue.fixed_version)
           else
@@ -22,9 +22,6 @@ module CarryOverHelper
         end
         flag = arr.empty?
       end
-      original = Issue.find params[:id]
-      original.attributes = {"status_id" => IssueStatus.find_by_name("Carried Over").id}
-      original.save
     end
   end
 
@@ -44,11 +41,9 @@ module CarryOverHelper
   
   def self.create_issue(issue, parent, create_parent, version)
     exist_issue = Issue.find(:all, :conditions=>{:subject=>"#{issue.subject.gsub(/(\[CO\])+/, "")}[CO]", 
-                                                 :description=>issue.description,
-                                                 :fixed_version_id=>version.id}).select{|x| x.status.name == "Carried Over"}.first
+                                                 :fixed_version_id=>version.id}).first
     exist_parent = Issue.find(:all, :conditions=>{:subject=>"#{parent.subject.gsub(/(\[CO\])+/, "")}[CO]", 
-                                                  :description=>parent.description,
-                                                  :fixed_version_id=>version.id}).select{|x| x.status.name == "Carried Over"}.first
+                                                  :fixed_version_id=>version.id}).first
     if !exist_issue
       new = issue.custom_clone
       new.subject = new.subject.gsub(/(\[CO\])+/, "") + "[CO]"

@@ -74,7 +74,7 @@ table#issueslist.treeTable tr td .expander-p {background-image: url('../images/c
 #facebox #carry-over-popup table { font-size: 10px; table-layout: fixed; height:50px; overflow: auto; border: 0;}
 #facebox #carry-over-popup table tr th, #facebox #carry-over-popup table tr td {white-space: normal; text-align: center; height: 22px; vertical-align: middle;}
 #facebox #carry-over-popup table tr td.left {text-align: left;}
-#facebox #carry-over-popup table tr td.ssubject {white-space: nowrap; overflow: hidden;}
+#facebox #carry-over-popup table tr td.ssubject {overflow: hidden;}
 #facebox #carry-over-popup table tr span.marquish {position: relative; left: 0; }
 
 #carry-over-ajax-indicator {background-color: #ddd; position: absolute; width: 47%; height: 74%; opacity: 0.5; font-weight: bold;
