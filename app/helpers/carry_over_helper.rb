@@ -7,6 +7,7 @@ module CarryOverHelper
     issue = original.custom_clone
     issue.attributes = self.create_attributes(carry_over, issue)
     if issue.save and carries and carries!=""
+      tree_list = [issue]
       carries = carries.split(",").map{|x| Issue.find(x.to_i)}
       arr = self.get_issues_to_be_carried(original.children, carries)
       flag = arr.empty?
@@ -14,9 +15,9 @@ module CarryOverHelper
         arr.each do |c|
           if c.parent.issue_from_id != original.id
             arr << c.parent.issue_from
-            self.create_issue(c, c.parent.issue_from, true, issue.fixed_version)
+            tree_list = self.create_issue(c, c.parent.issue_from, true, issue.fixed_version, tree_list)
           else
-            self.create_issue(c, issue, false, issue.fixed_version)
+            tree_list = self.create_issue(c, issue, false, issue.fixed_version, tree_list)
           end
           arr.delete c
         end
@@ -39,17 +40,18 @@ module CarryOverHelper
     ret
   end
   
-  def self.create_issue(issue, parent, create_parent, version)
-    exist_issue = Issue.find(:all, :conditions=>{:subject=>"#{issue.subject.gsub(/(\[CO\])+/, "")}[CO]", 
-                                                 :fixed_version_id=>version.id}).first
-    exist_parent = Issue.find(:all, :conditions=>{:subject=>"#{parent.subject.gsub(/(\[CO\])+/, "")}[CO]", 
-                                                  :fixed_version_id=>version.id}).first
-    if !exist_issue
+  def self.create_issue(issue, parent, create_parent, version, tree_list)
+    exist_issue = (Issue.find(:all, :conditions=>{:subject=>"#{issue.subject.gsub(/(\[CO\])+/, "")}[CO]", 
+                                                 :fixed_version_id=>version.id}) & tree_list).last
+    exist_parent = (Issue.find(:all, :conditions=>{:subject=>"#{parent.subject.gsub(/(\[CO\])+/, "")}[CO]", 
+                                                  :fixed_version_id=>version.id}) & tree_list).last
+    if exist_issue.nil?
       new = issue.custom_clone
       new.subject = new.subject.gsub(/(\[CO\])+/, "") + "[CO]"
       new.attributes = {"fixed_version_id" => version.id,
                         "custom_field_values" => self.create_custom_fields(issue.custom_values)}
       if new.save
+        tree_list << new
         issue = Issue.find(issue.id)
         issue.status = IssueStatus.find_by_name("Carried Over")
         puts "issue #{issue.save}"
@@ -58,12 +60,13 @@ module CarryOverHelper
       new = exist_issue
     end
     
-    if !exist_parent and create_parent
+    if exist_parent.nil? and create_parent
       np = parent.custom_clone
       np.subject = np.subject.gsub(/(\[CO\])+/, "") + "[CO]"
       np.attributes = {"fixed_version_id" => version.id,
                        "custom_field_values" => self.create_custom_fields(parent.custom_values)}
       if np.save
+        tree_list << np
         parent = Issue.find(parent.id)
         parent.status = IssueStatus.find_by_name("Carried Over")
         puts "parent #{parent.save}"
@@ -82,6 +85,7 @@ module CarryOverHelper
       puts rel.inspect
       puts "relationship #{rel.save}"
     end
+    tree_list
   end
   
   def self.create_attributes(carry_over, issue)
