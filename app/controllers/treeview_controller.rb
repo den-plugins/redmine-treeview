@@ -461,7 +461,13 @@ class TreeviewController < IssuesController
     @subtasks = @issue.children.select {|c| !c.closed?}
     @carry_over_feature = (params[:carry_over_to] && params[:edit]) ? @project.issues.find(params[:carry_over_to][:feature_id]) : Issue.new
     @carry_over_version = params[:carry_over_to] ? Version.find(params[:carry_over_to][:fixed_version_id]) : @issue.fixed_version
-    @carry_over_features_list = @carry_over_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
+    if @carry_over_version
+      @id = @carry_over_version.id
+      @carry_over_features_list = @carry_over_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
+    else
+      @id = nil
+      @carry_over_features_list = []
+    end
     respond_to do |format|
           format.html
           format.js { render_to_facebox :template => "treeview/carry_over" }
@@ -474,6 +480,7 @@ class TreeviewController < IssuesController
     version = @project.versions.build(:name => params[:version])
     version.save
     @carry_over_version = version
+    @id = version.id
     respond_to do |format|
       format.js {render :layout => false}
     end
