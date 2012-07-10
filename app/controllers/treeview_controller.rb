@@ -477,7 +477,9 @@ class TreeviewController < IssuesController
   def create_iteration
     @project = Project.find_by_identifier(params[:project_id])
     @issue = Issue.find(params[:id])
-    version = @project.versions.build(:name => params[:version])
+    version = @project.versions.build(:name => params[:version], 
+                                      :state => 1,
+                                      :version_type => 1)
     version.save
     @carry_over_version = version
     @id = version.id
