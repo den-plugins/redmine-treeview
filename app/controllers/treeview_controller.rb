@@ -460,7 +460,12 @@ class TreeviewController < IssuesController
   end
 
   def carry_over
-    CarryOverHelper.carry_over(params) if params[:carry_over_to]
+    if params[:carry_over_to]
+      CarryOverHelper.carry_over(params) if params[:carry_over_to]
+      html = "treeview/_success_message"
+    else
+      html = "treeview/carry_over"
+    end
     @priorities = Enumeration.priorities
     @subtasks = @issue.children.select {|c| !c.closed? and c.children.empty?}
     @carry_over_feature = (params[:carry_over_to] && params[:edit]) ? @project.issues.find(params[:carry_over_to][:feature_id]) : Issue.new
@@ -474,7 +479,7 @@ class TreeviewController < IssuesController
     end
     respond_to do |format|
           format.html
-          format.js { render_to_facebox :template => "treeview/carry_over" }
+          format.js { render_to_facebox :template => html }
     end
   end
   
