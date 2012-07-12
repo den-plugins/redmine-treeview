@@ -76,7 +76,7 @@ module CarryOverHelper
         tree_list << np
         parent = Issue.find(parent.id)
         unless parent.children.map{|x| x.status.is_closed}.include? false
-          parent.status = IssueStatus.find_by_name("Carried Over") 
+          parent.status = IssueStatus.find_by_name("Closed") 
           puts "parent #{parent.save}"
         end
       end
