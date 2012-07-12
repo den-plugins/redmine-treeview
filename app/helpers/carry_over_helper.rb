@@ -6,22 +6,29 @@ module CarryOverHelper
     carries = carry_over[:issues]
     issue = original.custom_clone
     issue.attributes = self.create_attributes(carry_over, issue)
-    if issue.save and carries and carries!=""
-      tree_list = [issue]
-      carries = carries.split(",").map{|x| Issue.find(x.to_i)}
-      arr = self.get_issues_to_be_carried(original.children, carries)
-      flag = arr.empty?
-      while !flag
-        arr.each do |c|
-          if c.parent.issue_from_id != original.id
-            arr << c.parent.issue_from
-            tree_list = self.create_issue(c, c.parent.issue_from, true, issue.fixed_version, tree_list)
-          else
-            tree_list = self.create_issue(c, issue, false, issue.fixed_version, tree_list)
-          end
-          arr.delete c
-        end
+    if carries and carries!=""
+      begin
+        issue.save!
+      rescue ActiveRecord::RecordInvalid
+        return false
+      else
+        tree_list = [issue]
+        carries = carries.split(",").map{|x| Issue.find(x.to_i)}
+        arr = self.get_issues_to_be_carried(original.children, carries)
         flag = arr.empty?
+        while !flag
+          arr.each do |c|
+            if c.parent.issue_from_id != original.id
+              arr << c.parent.issue_from
+              tree_list = self.create_issue(c, c.parent.issue_from, true, issue.fixed_version, tree_list)
+            else
+              tree_list = self.create_issue(c, issue, false, issue.fixed_version, tree_list)
+            end
+            arr.delete c
+          end
+          flag = arr.empty?
+        end
+      return true
       end
     end
   end
