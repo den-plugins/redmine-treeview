@@ -7,7 +7,7 @@
     <%= render :partial => "iteration_selection_form" %>
   </div>
   <div class="carry-over-options" >
-    <%= text_field 'carry_over_to', 'subject', :value => "#{h @issue.subject}", :style => "width: 99%" %>
+    <%= text_field 'carry_over_to', 'subject', :value => "#{h @issue.subject}", :required=>true, :style => "width: 99%" %>
   </div>
   <div class="carry-over-extra">
 
