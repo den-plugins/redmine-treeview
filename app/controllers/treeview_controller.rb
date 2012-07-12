@@ -5,10 +5,10 @@ class TreeviewController < IssuesController
   before_filter :find_issue, :only => [:show, :edit, :reply, :split, :transfer, :carry_over]
   before_filter :find_issues, :only => [:show, :bulk_edit, :move, :destroy]
   before_filter :find_project, :only => [:new, :update_form, :preview]
-  skip_filter :authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new]
+  skip_filter :authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new, :carry_over_operation, :create_iteration]
   before_filter :treeview_authorize, :only => [:show, :edit, :bulk_edit, :move, :destroy, :new]
   before_filter :authorize, :except => [:index, :changes, :gantt, :calendar, :preview, :update_form, :context_menu, :new_remote, :edit_remote, :update_status_remote,
-                                        :rollback_credit, :transfer, :create_iteration]
+                                        :rollback_credit, :transfer]
 
   def index
     retrieve_query
@@ -201,6 +201,7 @@ class TreeviewController < IssuesController
             :delete => (@project && User.current.allowed_to?(:delete_issues, @project)),
             :split => (@project && User.current.allowed_to?(:split_issues, @project)),
             :carry_over => (@project && User.current.allowed_to?(:carry_over_issues, @project)),
+            :carry_over_operation => (@project && User.current.allowed_to?(:carry_over_operation, @project)),
             :create_iteration => (@project && User.current.allowed_to?(:create_new_iteration, @project))
             }
 
@@ -460,29 +461,25 @@ class TreeviewController < IssuesController
   end
 
   def carry_over
-    if params[:carry_over_to]
-      CarryOverHelper.carry_over(params) if params[:carry_over_to]
-      html = "treeview/_success_message"
-    else
-      html = "treeview/carry_over"
-    end
     @priorities = Enumeration.priorities
-    @subtasks = @issue.children.select {|c| !c.closed? and c.children.empty?}
+    @subtasks = CarryOverHelper.get_children(@issue)
     @carry_over_feature = (params[:carry_over_to] && params[:edit]) ? @project.issues.find(params[:carry_over_to][:feature_id]) : Issue.new
     @carry_over_version = params[:carry_over_to] ? Version.find(params[:carry_over_to][:fixed_version_id]) : @issue.fixed_version
-    if @carry_over_version
-      @id = @carry_over_version.id
-      @carry_over_features_list = @carry_over_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
-    else
-      @id = nil
-      @carry_over_features_list = []
-    end
+    @carry_over_features_list = @carry_over_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
     respond_to do |format|
           format.html
-          format.js { render_to_facebox :template => html }
+          format.js { render_to_facebox :template => "treeview/carry_over" }
     end
   end
   
+  def carry_over_operation
+    CarryOverHelper.carry_over(params)
+    respond_to do |format|
+      format.html
+      format.js { render_to_facebox :template => "treeview/_success_message" }
+    end 
+  end
+
   def create_iteration
     @project = Project.find_by_identifier(params[:project_id])
     @issue = Issue.find(params[:id])

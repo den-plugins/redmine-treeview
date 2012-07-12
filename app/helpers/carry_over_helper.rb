@@ -106,4 +106,18 @@ module CarryOverHelper
     end
     hash
   end
+
+  def self.get_children(parent)
+    flag = false
+    arr = parent.children
+    children = []
+    while !flag
+      arr.each do |x|
+        arr.delete x
+        x.children.empty? ? children << x : arr += x.children
+      end
+      flag = arr.empty?
+    end
+    children
+  end
 end

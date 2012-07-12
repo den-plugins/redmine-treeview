@@ -1,4 +1,4 @@
-<% remote_form_for :issue, Issue.new, :url => {:action => 'carry_over', :id => @issue},
+<% remote_form_for :issue, Issue.new, :url => {:action => 'carry_over_operation', :id => @issue},
                                        :html => {:id => 'issue-carry-over-form-new', :class => 'issue-carry-over-form', :multipart => true, :style => "display: #{@carry_over_feature.new_record? ? 'block' : 'none' }"} do %>
   <div class="carry-over-options iteration" >
     <%= render :partial => "iteration_selection" %>
