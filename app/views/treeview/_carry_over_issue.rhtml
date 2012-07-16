@@ -1,6 +1,6 @@
-<tr id="s_<%= subtask.id %>" class="<%= carry_over_subtask_class subtask %>">
+<tr id="s_<%= subtask.id %>" class="<%= carry_over_subtask_class subtask %> <%= hide %>" parent="s_<%= parent %>">
   <td><%= subtask.tracker %></td>
-  <td class="left ssubject"><span class="marquish"><%= subtask.subject %></span></td>
+  <td class="left ssubject"><span class="marquish" style="margin-left:<%= indent %>%"><%= subtask.subject %></span></td>
   <td><%= subtask.status.name %></td>
   <td><%= subtask.estimated_hours %></td>
   <td><%= subtask.done_ratio %></td>
@@ -8,7 +8,7 @@
   <td><%= subtask.remaining_effort.to_f %></td>
   <td class="small ">
     <% if subtask.can_be_carried_over? %>
-      <a class = "transfer_button from"></a>
+      <a class = "transfer_button <%= carry_over_cmd %>"></a>
     <% end %>
   </td>
 </tr>
@@ -16,6 +16,6 @@
 <% children = subtask.children %>
 <% unless children.empty? %>
   <% children.each do |c| %>
-    <%= render :partial => 'treeview/carry_over_issue', :locals => {:subtask => c} %>
+    <%= render :partial => 'treeview/carry_over_issue', :locals => {:subtask => c, :indent => indent+10, :hide => hide, :parent => subtask.id, :carry_over_cmd => carry_over_cmd} %>
   <% end %>
 <% end %>

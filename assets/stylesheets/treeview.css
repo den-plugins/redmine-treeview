@@ -46,7 +46,14 @@ table#issueslist.treeTable tr td .expander-p {background-image: url('../images/c
 #facebox #split-popup table tr th, #facebox #split-popup table tr td {white-space: normal; text-align: center; height: 22px; vertical-align: middle;}
 #facebox #split-popup table tr td.left {text-align: left;}
 #facebox #split-popup table tr td.ssubject {white-space: nowrap; overflow: hidden;}
-#facebox #split-popup table tr span.marquish {position: relative; left: 0; }
+#facebox #split-popup table tr span.marquish {
+  position: relative; 
+  left: 0; 
+  display:block; 
+  background-image: url("../images/corner.png");
+  background-repeat: no-repeat;
+  padding-left: 11px;}
+ 
 
 #split-ajax-indicator {background-color: #ddd; position: absolute; width: 47%; height: 74%; opacity: 0.5; font-weight: bold;
                                         border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; padding: 2px;}
@@ -75,7 +82,13 @@ table#issueslist.treeTable tr td .expander-p {background-image: url('../images/c
 #facebox #carry-over-popup table tr th, #facebox #carry-over-popup table tr td {white-space: normal; text-align: center; height: 22px; vertical-align: middle;}
 #facebox #carry-over-popup table tr td.left {text-align: left;}
 #facebox #carry-over-popup table tr td.ssubject {overflow: hidden;}
-#facebox #carry-over-popup table tr span.marquish {position: relative; left: 0; }
+#facebox #carry-over-popup table tr span.marquish {
+  position: relative; 
+  left: 0; 
+  display:block; 
+  background-image: url("../images/corner.png");
+  background-repeat: no-repeat;
+  padding-left: 11px;}
 
 #carry-over-ajax-indicator {background-color: #ddd; position: absolute; width: 47%; height: 74%; opacity: 0.5; font-weight: bold;
                                         border-radius: 5px; -webkit-border-radius: 5px; -moz-border-radius: 5px; padding: 2px;}

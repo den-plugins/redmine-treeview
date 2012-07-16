@@ -24,11 +24,15 @@
         <tbody>
         <% if @subtasks.any? %>
           <% @subtasks.each do |subtask| %>
-            <%= render :partial => "treeview/carry_over_issue", :locals => {:subtask => subtask} %>
+            <%= render :partial => "treeview/carry_over_issue", :locals => {:subtask => subtask, 
+                                                                            :indent => 0, 
+                                                                            :hide => nil, 
+                                                                            :parent => @issue.id, 
+                                                                            :carry_over_cmd => "from"} %>
           <% end %>
         <% else %>
           <tr>
-            <td class="no-task-splittable" colspan="5">No task/s found for this user story or feature.</td>
+            <td id="no_task_origin" colspan="8">No task/s found for this user story or feature.</td>
           </tr>
         <% end %>
         </tbody>

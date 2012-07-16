@@ -15,19 +15,16 @@
   <tbody>
   <% if subtasks.any? %>
     <% subtasks.each do |subtask| %>
-      <tr class="<%= cycle('even', 'odd', :name => 'subtasks') %>">
-        <td><%= subtask.tracker %></td>
-        <td class="left"><%= subtask.subject %></td>
-        <td><%= subtask.status.name %></td>
-        <td><%=  %></td>
-      </tr>
+      <%= render :partial => "treeview/carry_over_issue", :locals => {:subtask => subtask, 
+                                                                      :indent => 0, 
+                                                                      :hide => "hidden", 
+                                                                      :parent => parent, 
+                                                                      :carry_over_cmd => "to"} %>
     <% end %>
-    <% reset_cycle 'subtasks' %>
-  <% else %>
-    <tr id="no_tasks_<%= type %>">
-      <td class="no-task-transfer" colspan="8">No task/s found for this user story or feature.</td>
-    </tr>
   <% end %>
+  <tr id="no_tasks_<%= type %>">
+    <td class="no-task-transfer" colspan="8">No task/s found for this user story or feature.</td>
+  </tr>
   </tbody>
 </table>
 </div>

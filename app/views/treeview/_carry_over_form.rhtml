@@ -19,7 +19,7 @@
     <%= select 'carry_over_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @issue.priority_id }%>
   </div>
   <%= text_field 'carry_over_to', 'issues', :class=>"hidden" %>
-  <%= render :partial => "treeview/carry_over_subtasks", :locals => {:subtasks => [], :type => "new"}%>
+  <%= render :partial => "treeview/carry_over_subtasks", :locals => {:subtasks => @subtasks, :type => "new", :parent => @issue.id}%>
   <div class="carry-over-options" style="width: 100%">
     <%= submit_tag "Save", :id => "new_carry_over_form_submit", :style => "float: right", :disabled=>true%>
   </div>
