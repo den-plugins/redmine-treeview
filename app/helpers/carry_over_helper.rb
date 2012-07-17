@@ -84,7 +84,7 @@ module CarryOverHelper
       if new.save
         tree_list << new
         issue = Issue.find(issue.id)
-        #issue.status = IssueStatus.find_by_name("Carried Over")
+        issue.status = IssueStatus.find_by_name("Carried Over")
         puts "issue #{issue.save}"
       end
     else
