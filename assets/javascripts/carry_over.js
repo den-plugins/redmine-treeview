@@ -79,18 +79,6 @@ var CarryOver = {
       j(".carry-over-options.iteration").removeClass("hidden");
       j(".carry-over-options.create_iteration").addClass("hidden");
     });
-
-    j("#issue-carry-over-form-new").submit(function() {
-      var dataStream = j(this).seriaize();
-      $.ajax({
-        type: 'post',
-        url: '/treeview/carry_over/',
-        data: dataStream,
-        success: function() {
-        }
-      });
-      return false;
-    });
   },
   
   transfer: function(issue, cmd) {

@@ -476,10 +476,10 @@ class TreeviewController < IssuesController
   def carry_over_operation
     if CarryOverHelper.carry_over(params)
       success_message = "\"<div id='notif' class='flash notice'>Issues have been carried over successfully.</div>\""
-      render :js => "jQuery('#facebox .close').trigger('click'); jQuery(#{success_message}).insertBefore('#query_form');"
+      render :js => "jQuery('#facebox .close').trigger('click'); jQuery(#{success_message}).insertBefore('#query_form'); jQuery(window).scrollTop(0,0);"
     else
       fail_message = "\"<div id='notif' class='flash error'>Issues have not been carried over.</div>\""
-      render :js => "jQuery('#facebox .close').trigger('click'); jQuery(#{fail_message}).insertBefore('#query_form');"
+      render :js => "jQuery('#facebox .close').trigger('click'); jQuery(#{fail_message}).insertBefore('#query_form'); jQuery(window).scrollTop(0,0);"
     end
   end
 
