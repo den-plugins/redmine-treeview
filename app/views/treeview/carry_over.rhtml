@@ -3,7 +3,7 @@
   <div style="margin-bottom: 15px"><b>Carry Over Feature</b></div>
   <div class="carryovercontentleft">
     <div style="margin-bottom: 15px"><b>ORIGINAL</b></div>
-    <div class="carry-over-label"><%= l(:field_fixed_version) %></div><div class="carry-over-value"><%= @issue.fixed_version%></div>
+    <div class="carry-over-label"><%= l(:field_fixed_version) %></div><div class="carry-over-value fixed_version"><%= @issue.fixed_version%></div>
     <div class="carry-over-label"><%= l(:default_tracker_feature) %></div><div class="carry-over-value"><%= @issue.subject %></div>
     <div class="carry-over-label"><%= l(:field_description)%></div><div class="carry-over-value" style="height: 100px"><%= textilizable @issue.description %></div>
     <div class="carry-over-label"><%= l(:field_priority) %></div><div class="carry-over-value"><%= @issue.priority %></div>
