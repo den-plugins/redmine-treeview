@@ -110,7 +110,7 @@
   <% end %>
   <% if carry_over?(@issue) %>
   	  <li><%= facebox_context_menu_link l(:button_carry_over), {:controller => 'treeview', :action => 'carry_over', :project_id => @project, :id => @issue},
-  	          :disabled => !@can[:carry_over] %></li>
+  	          :disabled => !@can[:carry_over] || no_child_to_carry_over?(@issue).eql?(0) %></li>
   <% end %>
 	<% if @can[:log_time] -%>
 	<li><%= context_menu_link l(:button_log_time), {:controller => 'timelog', :action => 'edit', :issue_id => @issue},

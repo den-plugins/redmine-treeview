@@ -130,4 +130,18 @@ module TreeviewHelper
       @carry_over_feature.priority_id
     end
   end
+
+  def no_child_to_carry_over?(params)
+    issue = Issue.find params[:id]
+    subtasks = issue.children
+    can_be_carried_over = 0
+    if subtasks.any?
+      subtasks.each do |subtask|
+        if subtask.can_be_carried_over?
+          can_be_carried_over += 1
+        end
+      end
+    end
+    can_be_carried_over
+  end
 end
