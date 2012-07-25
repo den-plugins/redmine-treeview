@@ -2,6 +2,12 @@ require 'redmine'
 require 'remaining_effort_entry'
 require 'custom_issue_patch'
 
+require File.dirname(__FILE__) + '/install_assets'
+Dir[File.dirname(__FILE__) + '/../app/helpers/*.rb'].each {|file| require file }
+Dir[File.dirname(__FILE__) + '/../app/controllers/*.rb'].each {|file| require file }
+ActionController::Base.prepend_view_path File.dirname(__FILE__) + "/../app/views"
+ActionView::Base.send(:include,TreeviewHelper)
+
 Redmine::Plugin.register :redmine_treeview do
   name 'Redmine Treeview plugin'
   author 'Author name'
