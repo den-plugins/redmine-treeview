@@ -373,7 +373,8 @@ class TreeviewController < IssuesController
   
   def split
     @priorities = Enumeration.priorities
-    @subtasks = @issue.children.select {|c| !c.closed?}
+    support_tracker_id = Tracker.find_by_name("Support").id
+    @subtasks = @issue.children.select {|c| !c.closed? && c.tracker_id != support_tracker_id}
     @split_feature = (params[:split_to] && params[:edit]) ? @project.issues.find(params[:split_to][:feature_id]) : Issue.new
     @split_version = params[:split_to] ? Version.find(params[:split_to][:fixed_version_id]) : @issue.fixed_version
     @split_features_list = @split_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
