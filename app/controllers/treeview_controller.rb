@@ -312,8 +312,8 @@ class TreeviewController < IssuesController
         issue.due_date = params[:due_date] unless params[:due_date].blank?
         issue.done_ratio = params[:done_ratio] unless params[:done_ratio].blank?
         issue.custom_field_values = custom_field_values if custom_field_values && !custom_field_values.empty?
-
-        check_child_issue(issue, fixed_version)  if issue.feature?
+        
+        check_child_issue(issue, fixed_version)  if issue.feature? and fixed_version
 
         call_hook(:controller_issues_bulk_edit_before_save, { :params => params, :issue => issue })
         # Don't save any change to the issue if the user is not authorized to apply the requested status

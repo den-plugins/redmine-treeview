@@ -10,10 +10,10 @@ class << ActionController::Routing::Routes
           group_actions.connect 'stories/:project_id', :action => 'index'
           group_actions.connect 'treeview/:action', :action => 'context_menu'
           group_actions.connect 'treeview/create_iteration'
+          group_actions.connect 'treeview/:action/:id', :action => 'edit'
         end
       end
     end
-    puts @routes
     additional_routes = @routes.dup
     reload!
     @routes += additional_routes
