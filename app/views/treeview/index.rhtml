@@ -16,7 +16,7 @@
     <%= render :partial => 'treeview/columns', :locals => {:query => @query} %>
     <p class="buttons">
     <%= link_to_remote l(:button_apply),
-                       { :url => { :set_filter => 1 },
+                       { :url => { :set_filter => 1 , :project_id => @project },
                          :update => "content",
                          :before => "selectAllOptions(\"selected_columns\");",
                          :with => "Form.serialize('query_form')"

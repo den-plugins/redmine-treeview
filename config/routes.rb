@@ -13,6 +13,7 @@ class << ActionController::Routing::Routes
         end
       end
     end
+    puts @routes
     additional_routes = @routes.dup
     reload!
     @routes += additional_routes
