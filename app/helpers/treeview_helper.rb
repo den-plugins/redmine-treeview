@@ -137,8 +137,12 @@ module TreeviewHelper
     can_be_carried_over = 0
     if subtasks.any?
       subtasks.each do |subtask|
-        if subtask.can_be_carried_over?
-          can_be_carried_over += 1
+        can_be_carried_over += 1 if subtask.can_be_carried_over?
+        child = subtask.children
+        if child.any?
+          child.each do |c|
+            can_be_carried_over += 1 if no_child_to_carry_over?(c)
+          end
         end
       end
     end
@@ -151,8 +155,12 @@ module TreeviewHelper
     to_split = 0
     if subtasks.any?
       subtasks.each do |subtask|
-        if subtask.is_transferable?
-          to_split += 1
+        to_split += 1 if subtask.is_transferable?
+        child = subtask.children
+        if child.any?
+          child.each do |c|
+            to_split += 1 if no_child_to_split?(c)
+          end
         end
       end
     end
