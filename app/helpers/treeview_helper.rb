@@ -144,4 +144,18 @@ module TreeviewHelper
     end
     can_be_carried_over
   end
+
+  def no_child_to_split?(params)
+    issue = Issue.find params[:id]
+    subtasks = issue.children
+    to_split = 0
+    if subtasks.any?
+      subtasks.each do |subtask|
+        if subtask.is_transferable?
+          to_split += 1
+        end
+      end
+    end
+    to_split
+  end
 end

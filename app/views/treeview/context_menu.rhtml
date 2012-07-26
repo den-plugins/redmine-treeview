@@ -106,7 +106,7 @@
 	        :class => 'icon-copy', :disabled => !@can[:copy] %></li>
   <% if splittable?(@issue) %>
 	  <li><%= facebox_context_menu_link l(:button_split), {:controller => 'treeview', :action => 'split', :project_id => @project, :id => @issue},
-	          :disabled => !@can[:split] || no_child_to_carry_over?(@issue).eql?(0) %></li>
+	          :disabled => !@can[:split] || no_child_to_split?(@issue).eql?(0) %></li>
   <% end %>
   <% if carry_over?(@issue) %>
   	  <li><%= facebox_context_menu_link l(:button_carry_over), {:controller => 'treeview', :action => 'carry_over', :project_id => @project, :id => @issue},
