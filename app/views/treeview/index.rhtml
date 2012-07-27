@@ -73,14 +73,14 @@
   <%= auto_discovery_link_tag(:atom, {:action => 'changes', :query_id => @query, :format => 'atom', :page => nil, :key => User.current.rss_key}, :title => l(:label_changes_details)) %>
   <%= javascript_include_tag 'context_menu' %>
   <%= stylesheet_link_tag 'context_menu' %>
-  <%= stylesheet_link_tag 'redmine_treeview/treeview' %>
+  <%= stylesheet_link_tag '/plugin_assets/redmine_treeview/stylesheets/treeview' %>
   <%= javascript_include_tag 'jquery', :plugin => 'pm_dashboard' %>
-  <%= javascript_include_tag 'redmine_treeview/jquery.treeTable.js'%>
-  <%= javascript_include_tag 'redmine_treeview/treeview' %>
+  <%= javascript_include_tag '/plugin_assets/redmine_treeview/javascripts/jquery.treeTable.js'%>
+  <%= javascript_include_tag '/plugin_assets/redmine_treeview/javascripts/treeview' %>
   <%= stylesheet_link_tag 'facebox', :plugin => 'facebox_render' %>
   <%= javascript_include_tag 'facebox.js', :plugin => 'facebox_render' %>
-  <%= javascript_include_tag 'redmine_treeview/split.js' %>
-  <%= javascript_include_tag 'redmine_treeview/carry_over.js' %>
+  <%= javascript_include_tag '/plugin_assets/redmine_treeview/javascripts/split.js' %>
+  <%= javascript_include_tag '/plugin_assets/redmine_treeview/javascripts/carry_over.js' %>
 <% end %>
 
 <div id="context-menu" style="display: none;"></div>
