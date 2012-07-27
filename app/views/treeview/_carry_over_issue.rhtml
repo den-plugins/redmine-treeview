@@ -13,7 +13,8 @@
   </td>
 </tr>
 
-<% children = subtask.children %>
+<% support_tracker_id = Tracker.find_by_name("Support").id
+   children = subtask.children.select {|c| c.tracker_id != support_tracker_id} %>
 <% unless children.empty? %>
   <% children.each do |c| %>
     <%= render :partial => 'treeview/carry_over_issue', :locals => {:subtask => c, :indent => indent+10, :hide => hide, :parent => subtask.id, :carry_over_cmd => carry_over_cmd} %>
