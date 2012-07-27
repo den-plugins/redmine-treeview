@@ -64,6 +64,7 @@ function bind_transfer_event(type){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
       if(jQuery(this).closest('tr').hasClass("is_parent")){
         jQuery(this).closest('tr').hide();
+        transfer_task(id, type);
         transfer_descendants(jQuery(".child-of-s_" + id), type);
       }else{
         transfer_task(id, type);
