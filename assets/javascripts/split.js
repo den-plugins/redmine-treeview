@@ -8,9 +8,11 @@ function transfer_task(id, type){
   if(jQuery("#transferred_" + id).length == 0){
     if(jQuery("#no_tasks_" + type).length == 0){
       jQuery(data).insertAfter("#transfer_table_" + type + " " + after).find(".small").remove();
+      jQuery("#transferred_" + id).append("<td class='small'><img width='15' src='/images/arrow_to.png' alt='Arrow_to' onclick=\"undo_transferred(\'" + type + "\'" + ", " + "\'" + id + "\')\"></td>")
     }else{
       jQuery("#no_tasks_" + type).remove();
       jQuery("#transfer_table_" + type).append(data).find(".small").remove();
+      jQuery("#transferred_" + id).append("<td class='small'><img width='15' src='/images/arrow_to.png' alt='Arrow_to' onclick=\"undo_transferred(\'" + type + "\'" + ", " + "\'" + id + "\')\"></td>")
     }
     jQuery("#transferred_" + id).append("<input type='hidden' name='transferred_subtasks[]' value='"+ id +"'>");
     subtask.hide();
@@ -59,6 +61,24 @@ function reset_transferred(type){
   }
 }
 
+
+function undo_transferred(type, id){
+  var table1 = jQuery("#splittable_list"),
+      table2 = jQuery("#transfer_table_" + type);
+  table1.find("#s_" + id).show();
+  var table2_rows = table2.find("tbody tr");
+  for(var i = 0; i < table2_rows.length; i++){
+    var rowId = jQuery(table2_rows[i]).attr('id');
+    if(rowId && rowId.match("transferred_" + id)){
+      jQuery("#" + rowId).remove();
+    }
+  }
+  if(table2.find('tbody tr').length == 0){
+    table2.find('tbody')
+          .append('<tr id="no_tasks_'+ type +'"><td colspan="4">No task/s found for this user story or feature.</td></tr>');
+  }
+}
+
 function bind_transfer_event(type){
    jQuery("#splittable_list td.small img").unbind("click").click(function(){
       var id = jQuery(this).closest('tr').attr('id').match(/\d+$/);
@@ -79,6 +99,7 @@ function init_binding(){
     bind_transfer_event('edit');
   }
 }
+
 
 //jQuery(document).ready(function() {
 //  var scroll_text;
