@@ -46,8 +46,10 @@ var CarryOver = {
       error = j(".error_message");
       unique = true;
       error.html("").hide();
-      if(j(".carry-over-value.fixed_version").text() == version)
-          unique = false
+      j("#carry_over_to_fixed_version_id").children("option").each(function(index, val){
+        if(val.text.toLowerCase() == version.toLowerCase())
+            unique = false
+      });
 
       if(version!="") {
         if(unique) {
