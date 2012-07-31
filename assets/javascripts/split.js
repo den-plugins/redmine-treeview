@@ -23,6 +23,7 @@ function transfer_task(id, type){
             data2 = "<tr id='transferred_" + parentId + "' class='odd issue'>" + subtask2.html() + "</tr>";
       if(jQuery("#transferred_" + parentId).length == 0){
         jQuery(data2).insertBefore("#transfer_table_" + type + " #transferred_" + childId).find(".small").remove();
+        jQuery("#transferred_" + parentId).append("<td class='small'></td>")
         if(jQuery("#transferred_" + parentId).find('input').length == 0){
           jQuery("#transferred_" + parentId).append("<input type='hidden' name='parent_tasks[]' value='"+ parentId +"'>");
         }
@@ -64,7 +65,17 @@ function reset_transferred(type){
 
 function undo_transferred(type, id){
   var table1 = jQuery("#splittable_list"),
-      table2 = jQuery("#transfer_table_" + type);
+      table2 = jQuery("#transfer_table_" + type),
+      subtask = jQuery("#s_" + id),
+      hasParent = subtask.attr("class").match(/child-of-s_\d+/);
+
+    while(hasParent){
+      parentId = hasParent[0].match(/\d+/);
+      jQuery("#transferred_" + parentId).remove();
+      subtask = jQuery("#s_" + parentId)
+      hasParent = subtask.attr("class").match(/child-of-s_\d+/);
+    }
+
   table1.find("#s_" + id).show();
   var table2_rows = table2.find("tbody tr");
   for(var i = 0; i < table2_rows.length; i++){
@@ -74,8 +85,7 @@ function undo_transferred(type, id){
     }
   }
   if(table2.find('tbody tr').length == 0){
-    table2.find('tbody')
-          .append('<tr id="no_tasks_'+ type +'"><td colspan="4">No task/s found for this user story or feature.</td></tr>');
+    table2.find('tbody').append('<tr id="no_tasks_'+ type +'"><td colspan="4">No task/s found for this user story or feature.</td></tr>');
   }
 }
 
