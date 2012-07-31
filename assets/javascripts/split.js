@@ -71,6 +71,7 @@ function undo_transferred(type, id){
 
     while(hasParent){
       parentId = hasParent[0].match(/\d+/);
+      jQuery("#splittable_list").find("#s_" + parentId).show();
       jQuery("#transferred_" + parentId).remove();
       subtask = jQuery("#s_" + parentId)
       hasParent = subtask.attr("class").match(/child-of-s_\d+/);
