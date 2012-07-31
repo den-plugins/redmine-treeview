@@ -402,6 +402,7 @@ class TreeviewController < IssuesController
         @split_feature.status = default_status
         
         if @split_feature.save
+          message = "\"<div id='notif' class='flash notice'>Issues have been split successfully.</div>\""
           @split_feature.predefined_tasks = nil
           if (transferred=params["transferred_subtasks"]) && !transferred.empty?
             # edit chosen subtasks
@@ -419,9 +420,11 @@ class TreeviewController < IssuesController
               subtask.save
             end
           end
+        else
+          message = "\"<div id='notif' class='flash error'>Issues have not been split.</div>\""
         end
       end
-      render :js => "jQuery('#facebox .close').trigger('click'); location.reload();"
+      render :js => "jQuery('#facebox .close').trigger('click'); jQuery(#{message}).insertBefore('#query_form'); jQuery(window).scrollTop(0,0);"
     else
       respond_to do |format|
         format.html
