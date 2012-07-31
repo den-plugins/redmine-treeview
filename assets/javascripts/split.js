@@ -23,6 +23,7 @@ function transfer_task(id, type){
             data2 = "<tr id='transferred_" + parentId + "' class='odd issue'>" + subtask2.html() + "</tr>";
       if(jQuery("#transferred_" + parentId).length == 0){
         jQuery(data2).insertBefore("#transfer_table_" + type + " #transferred_" + childId).find(".small").remove();
+        jQuery("#transferred_" + parentId).append("<td class='small'><img width='15' src='/images/arrow_to.png' alt='Arrow_to' onclick=\"undo_transferred(\'" + type + "\'" + ", " + "\'" + parentId + "\')\"></td>")
         if(jQuery("#transferred_" + parentId).find('input').length == 0){
           jQuery("#transferred_" + parentId).append("<input type='hidden' name='parent_tasks[]' value='"+ parentId +"'>");
         }
