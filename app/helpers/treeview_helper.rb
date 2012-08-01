@@ -141,7 +141,7 @@ module TreeviewHelper
         child = subtask.children
         if child.any?
           child.each do |c|
-            can_be_carried_over += 1 if no_child_to_carry_over?(c)
+            can_be_carried_over += 1 if no_child_to_carry_over?(c) > 0
           end
         end
       end
@@ -159,7 +159,7 @@ module TreeviewHelper
         child = subtask.children
         if child.any?
           child.each do |c|
-            to_split += 1 if no_child_to_split?(c)
+            to_split += 1 if no_child_to_split?(c) < 0
           end
         end
       end
