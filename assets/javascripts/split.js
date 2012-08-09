@@ -1,5 +1,6 @@
 function transfer_task(id, type){
   var subtask = jQuery("#s_" + id),
+      table_left = jQuery("#splittable_list"),
       hasParent = subtask.attr("class").match(/child-of-s_\d+/),
       data = "<tr id='transferred_" + id + "' class='odd issue'>" + subtask.html() + "</tr>",
       childId = id,
@@ -20,6 +21,8 @@ function transfer_task(id, type){
     while(hasParent){
       var parentId = hasParent[0].match(/\d+/),
             subtask2 = jQuery("#s_" + parentId),
+            has_child = 0,
+            table_left_rows = table_left.find("tbody tr:visible");
             data2 = "<tr id='transferred_" + parentId + "' class='odd issue'>" + subtask2.html() + "</tr>";
       if(jQuery("#transferred_" + parentId).length == 0){
         jQuery(data2).insertBefore("#transfer_table_" + type + " #transferred_" + childId).find(".small").remove();
@@ -27,10 +30,37 @@ function transfer_task(id, type){
         if(jQuery("#transferred_" + parentId).find('input').length == 0){
           jQuery("#transferred_" + parentId).append("<input type='hidden' name='parent_tasks[]' value='"+ parentId +"'>");
         }
+
+          for(var i = 0; i < table_left_rows.length; i++){
+              var rowId = jQuery(table_left_rows[i]).attr('id'),
+                  rowId_child = jQuery("#" + rowId).attr("class").match(/child-of-s_\d+/);
+
+              if(rowId_child && rowId_child[0].match(/\d+/)[0] == parentId){
+                  has_child += 1;
+              }
+          }
+
+          if(has_child == 0){
+              subtask2.attr("style", "display:none;");
+          }
+
         hasParent = subtask2.attr("class").match(/child-of-s_\d+/);
         childId= parentId;
       }else{
-        break;
+          for(var i = 0; i < table_left_rows.length; i++){
+              var rowId = jQuery(table_left_rows[i]).attr('id'),
+                  rowId_child = jQuery("#" + rowId).attr("class").match(/child-of-s_\d+/);
+
+              if(rowId_child && rowId_child[0].match(/\d+/)[0] == parentId){
+                  has_child += 1;
+              }
+          }
+
+          if(has_child == 0){
+              subtask2.attr("style", "display:none;");
+          }
+
+          break;
       }
     }
   }
@@ -87,7 +117,7 @@ function undo_transferred(type, id){
       for(var j = 0; j < table_rows.length; j++){
           var taskId = jQuery(table_rows[j]).attr('id').match(/\d+/),
               child = jQuery("#s_" + taskId);
-          if(child.attr("class").match(/child-of-s_\d+/) != null){
+          if(child && child.attr("class").match(/child-of-s_\d+/) != null){
               parent = child.attr("class").match(/child-of-s_\d+/)[0].match(/\d+/);
           }
 
