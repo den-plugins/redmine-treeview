@@ -24,7 +24,7 @@
 		<ul>
 		<% @statuses.each do |s| -%>
 		    <li><%= context_menu_link s.name, {:controller => 'treeview', :action => 'edit', :id => @issue, :issue => {:status_id => s}, :back_to => @back}, :method => :post,
-		                              :selected => (s == @issue.status), :disabled => !(@can[:update] && @allowed_statuses.include?(s)) %></li>
+		                              :selected => (s == @issue.status), :disabled => !(@can[:update] && @allowed_statuses.include?(s)) || (@open_issue > 0 && s.name == "Closed") %></li>
 		<% end -%>
 		</ul>
 	</li>

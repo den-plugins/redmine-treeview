@@ -185,9 +185,11 @@ class TreeviewController < IssuesController
   
   def context_menu
     @issues = Issue.find_all_by_id(params[:ids], :include => :project)
+    @open_issue = 0
     if (@issues.size == 1)
       @issue = @issues.first
       @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+      @issue.children.each {|c| @open_issue += 1 if !c.closed? } if @issue.children.any?
       @assignables = @issue.assignable_users
       @assignables << @issue.assigned_to if @issue.assigned_to && !@assignables.include?(@issue.assigned_to)
     end
