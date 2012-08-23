@@ -9,11 +9,11 @@ function transfer_task(id, type){
   if(jQuery("#transferred_" + id).length == 0){
     if(jQuery("#no_tasks_" + type).length == 0){
       jQuery(data).insertAfter("#transfer_table_" + type + " " + after).find(".small").remove();
-      jQuery("#transferred_" + id).append("<td class='small'><img width='15' src='/images/arrow_to.png' alt='Arrow_to' onclick=\"undo_transferred(\'" + type + "\'" + ", " + "\'" + id + "\')\"></td>")
+      jQuery("#transferred_" + id).append("<td class='small'><img width='15' src='/images/arrow_to.png' alt='Arrow_to' onclick=\"undo_transfer(\'" + type + "\'" + ", " + "\'" + id + "\')\"></td>")
     }else{
       jQuery("#no_tasks_" + type).remove();
       jQuery("#transfer_table_" + type).append(data).find(".small").remove();
-      jQuery("#transferred_" + id).append("<td class='small'><img width='15' src='/images/arrow_to.png' alt='Arrow_to' onclick=\"undo_transferred(\'" + type + "\'" + ", " + "\'" + id + "\')\"></td>")
+      jQuery("#transferred_" + id).append("<td class='small'><img width='15' src='/images/arrow_to.png' alt='Arrow_to' onclick=\"undo_transfer(\'" + type + "\'" + ", " + "\'" + id + "\')\"></td>")
     }
     jQuery("#transferred_" + id).append("<input type='hidden' name='transferred_subtasks[]' value='"+ id +"'>");
     subtask.hide();
@@ -75,6 +75,25 @@ function transfer_descendants(descendants, type){
   }
 }
 
+function undo_transfer_task(table1, table2, id){
+    table1.find("#s_" + id).show();
+    var table2_rows = table2.find("tbody tr");
+    for(var i = 0; i < table2_rows.length; i++){
+        var rowId = jQuery(table2_rows[i]).attr('id');
+        if(rowId && rowId.match("transferred_" + id)){
+            jQuery("#" + rowId).remove();
+        }
+    }
+}
+
+function undo_transfer_descendants(descendants, type){
+    for(var i=0; i < descendants.length; i++){
+        undo_transfer(type, jQuery(descendants[i]).attr("id").match(/\d+$/));
+        undo_transfer_descendants(jQuery(".child-of-s_" + jQuery(descendants[i]).attr("id").match(/\d+$/)), type);
+    }
+}
+
+
 function reset_transferred(type){
   var table1 = jQuery("#splittable_list"),
       table2 = jQuery("#transfer_table_" + type);
@@ -92,22 +111,35 @@ function reset_transferred(type){
   }
 }
 
-
-function undo_transferred(type, id){
+function undo_transfer(type, id){
   var table1 = jQuery("#splittable_list"),
       table2 = jQuery("#transfer_table_" + type),
       subtask = jQuery("#s_" + id),
       has_child = 0,
       hasParent = subtask.attr("class").match(/child-of-s_\d+/);
 
-  table1.find("#s_" + id).show();
-  var table2_rows = table2.find("tbody tr");
-  for(var i = 0; i < table2_rows.length; i++){
-    var rowId = jQuery(table2_rows[i]).attr('id');
-    if(rowId && rowId.match("transferred_" + id)){
-      jQuery("#" + rowId).remove();
-    }
-  }
+  if(subtask.hasClass("is_parent")){
+
+      undo_transfer_task(table1, table2, id);
+
+      var test = table2.find("tbody tr:visible");
+      for(var j = 0; j < test.length; j++){
+          var test_id = jQuery(test[j]).attr('id').match(/\d+/),
+              test_child = jQuery("#s_" + test_id),
+              test_parent = test_child.attr("class").match(/child-of-s_\d+/)[0].match(/\d+/);
+
+          if(test_parent == id){
+            jQuery("#" + jQuery(test[j]).attr('id')).remove();
+            test_child.show();
+          }
+          if(subtask.hasClass("is_parent")){
+            undo_transfer_descendants(jQuery(".child-of-s_" + test_id), type);
+          }
+      }
+
+  }else{
+
+  undo_transfer_task(table1, table2, id);
 
   while(hasParent){
       var parent = "";
@@ -131,7 +163,7 @@ function undo_transferred(type, id){
       subtask = jQuery("#s_" + parentId)
       hasParent = subtask.attr("class").match(/child-of-s_\d+/);
   }
-
+  }
   if(table2.find('tbody tr').length == 0){
     table2.find('tbody').append('<tr id="no_tasks_'+ type +'"><td colspan="4">No task/s found for this user story or feature.</td></tr>');
   }
