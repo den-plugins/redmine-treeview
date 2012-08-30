@@ -228,7 +228,17 @@ class TreeviewController < IssuesController
   def edit
     @open_issue = 0
     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
-    @issue.children.each {|c| @open_issue += 1 if !c.closed? } if @issue.children.any?
+    #check all nodes of the tree
+    if @issue.children.any?
+      arr = @issue.children
+      while !arr.empty? and @open_issue == 0
+        arr.each do |c|
+          @open_issue +=1 if !c.closed?
+          arr.delete c
+          arr += c.children
+        end
+      end
+    end
     @allowed_statuses = @allowed_statuses.reject{ |stat| stat.name.eql?("Closed") } if @open_issue > 0
     @priorities = Enumeration.priorities
     @accounting = Enumeration.accounting_types
@@ -236,7 +246,7 @@ class TreeviewController < IssuesController
     @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
     @time_entry = TimeEntry.new
     @update_options = {'Internal (DEN only)' => 1, 'Include Mystic' => 2}
-
+    
     @notes = params[:notes]
     journal = @issue.init_journal(User.current, @notes)
     issue_before_change = @issue.clone
@@ -250,6 +260,7 @@ class TreeviewController < IssuesController
       @issue.predefined_tasks = params[:issue]['predefined_tasks']
       @issue.attributes = attrs
       @issue.status = IssueStatus.find(attrs[:status_id]) if attrs[:status_id]
+      @issue.status = issue_before_change.status if @open_issue > 0
     end
 
     if request.post?
