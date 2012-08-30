@@ -226,7 +226,10 @@ class TreeviewController < IssuesController
   end
   
   def edit
+    @open_issue = 0
     @allowed_statuses = @issue.new_statuses_allowed_to(User.current)
+    @issue.children.each {|c| @open_issue += 1 if !c.closed? } if @issue.children.any?
+    @allowed_statuses = @allowed_statuses.reject{ |stat| stat.name.eql?("Closed") } if @open_issue > 0
     @priorities = Enumeration.priorities
     @accounting = Enumeration.accounting_types
     @default = @issue.accounting.id
@@ -236,13 +239,17 @@ class TreeviewController < IssuesController
 
     @notes = params[:notes]
     journal = @issue.init_journal(User.current, @notes)
+    issue_before_change = @issue.clone
+    issue_before_change.status = @issue.status
     # User can change issue attributes only if he has :edit permission or if a workflow transition is allowed
     if (@edit_allowed || !@allowed_statuses.empty?) && params[:issue]
       attrs = params[:issue].dup
       attrs.delete_if {|k,v| !UPDATABLE_ATTRS_ON_TRANSITION.include?(k) } unless @edit_allowed
       attrs.delete(:status_id) unless @allowed_statuses.detect {|s| s.id.to_s == attrs[:status_id].to_s}
       issue_clone = @issue.clone
+      @issue.predefined_tasks = params[:issue]['predefined_tasks']
       @issue.attributes = attrs
+      @issue.status = IssueStatus.find(attrs[:status_id]) if attrs[:status_id]
     end
 
     if request.post?
