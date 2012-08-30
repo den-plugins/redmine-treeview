@@ -246,7 +246,7 @@ class TreeviewController < IssuesController
     @edit_allowed = User.current.allowed_to?(:edit_issues, @project)
     @time_entry = TimeEntry.new
     @update_options = {'Internal (DEN only)' => 1, 'Include Mystic' => 2}
-    
+
     @notes = params[:notes]
     journal = @issue.init_journal(User.current, @notes)
     issue_before_change = @issue.clone
@@ -260,7 +260,6 @@ class TreeviewController < IssuesController
       @issue.predefined_tasks = params[:issue]['predefined_tasks']
       @issue.attributes = attrs
       @issue.status = IssueStatus.find(attrs[:status_id]) if attrs[:status_id]
-      @issue.status = issue_before_change.status if @open_issue > 0
     end
 
     if request.post?
