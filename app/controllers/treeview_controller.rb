@@ -396,7 +396,7 @@ class TreeviewController < IssuesController
     @priorities    = Enumeration.priorities
     @subtasks      = @issue.children.select {|c| !c.closed? && c.tracker_id != support_tracker_id}
     @split_feature = Issue.new
-    @split_version = @issue.fixed_version
+    @split_version = @issue.fixed_version || @project.versions.first
 
     if params[:split_to]
       feature_id     = params[:split_to][:feature_id]
@@ -433,7 +433,6 @@ class TreeviewController < IssuesController
         end
 
         if (@split_feature.new_record? and @split_feature.save) or !@split_feature.new_record?
-          message = "\"<div id='notif' class='flash notice'>Issues have been split successfully.</div>\""
           @split_feature.predefined_tasks = nil
           if (transferred=params["transferred_subtasks"]) && !transferred.empty?
             # edit chosen subtasks
@@ -451,11 +450,15 @@ class TreeviewController < IssuesController
               subtask.save
             end
           end
+
+          text_message = "Issues have been split successfully."
+          full_message = "\"<div id='notif' class='flash notice'>#{text_message}</div>\""
         else
-          message = "\"<div id='notif' class='flash error'>Issues have not been split.</div>\""
+          text_message = "Issues have not been split."
+          full_message = "\"<div id='notif' class='flash error'>#{text_message}</div>\""
         end
       end
-      render :js => "jQuery('#facebox .close').trigger('click'); jQuery(#{message}).insertBefore('#query_form'); jQuery(window).scrollTop(0,0);"
+      render :js => "jQuery('#facebox .close').trigger('click'); (jQuery('#query_form').length) ? jQuery(#{full_message}).insertBefore('#query_form') : alert('#{text_message}'); jQuery(window).scrollTop(0,0);"
     else
       respond_to do |format|
         format.html
