@@ -32,23 +32,32 @@
                                        :html => {:id => 'issue-split-form-new', :class => 'issue-split-form', :multipart => true, :style => "display: #{@split_feature.new_record? ? 'block' : 'none' }"},
                                        :loading => "$('split-ajax-indicator').show()",
                                        :complete => "$('split-ajax-indicator').hide()" do %>
-  <div class="split-options" style="width: 100%">
-    <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @split_version.id } %>
-  </div>
+
+  <h4>Existing Feature</h4>
   <div class="split-options" >
-    <%= text_field 'split_to', 'subject', :value => "#{h @issue.subject} - 2", :style => "width: 99%" %>
+    <%= select 'split_to', 'feature_id', collection_of_features, {:selected => @split_feature.id, :include_blank => true}, :style => "width: 100%", :onchange => "toggleNewOpts(this);" %>
   </div>
-  <div class="split-extra">
-    <!-- <a class="small" onclick="jQuery('.issue-split-form').toggle(); reset_transferred('new'); init_binding();" style="cursor: pointer">Other Features</a> -->
-  </div>
-  <div class="split-options description">
-    <%= text_area 'split_to', 'description', :style => "height: 99px; width: 98%; resize: none" %>
-  </div>
-  <div class="split-options" style="width: 100%">
-    <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @issue.priority_id }%>
-  </div>
-  <div class="split-options" style="width: 100%; margin-top: 10px;">
-    <%= display_predefined_tasks(@issue) %>
+  <hr/>
+  <h4>New Issue</h4>
+  <div id="split-new-issue-options">
+    <div class="split-options" style="width: 100%">
+      <%= select 'split_to', 'fixed_version_id', collection_of_versions, {:selected => @split_version.id } %>
+    </div>
+    <div class="split-options" >
+      <%= text_field 'split_to', 'subject', :value => "#{h @issue.subject} - 2", :style => "width: 99%" %>
+    </div>
+    <div class="split-extra">
+      <!-- <a class="small" onclick="jQuery('.issue-split-form').toggle(); reset_transferred('new'); init_binding();" style="cursor: pointer">Other Features</a> -->
+    </div>
+    <div class="split-options description">
+      <%= text_area 'split_to', 'description', :style => "height: 99px; width: 98%; resize: none" %>
+    </div>
+    <div class="split-options" style="width: 100%">
+      <%= select 'split_to', 'priority_id', @priorities.collect {|p| [p.name, p.id]}, {:selected => @issue.priority_id }%>
+    </div>
+    <div class="split-options" style="width: 100%; margin-top: 10px;">
+      <%= display_predefined_tasks(@issue) %>
+    </div>
   </div>
   <%= render :partial => "treeview/split_subtasks", :locals => {:subtasks => [], :type => "new"}%>
   <div class="split-options" style="width: 100%">

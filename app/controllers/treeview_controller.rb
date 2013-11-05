@@ -33,7 +33,7 @@ class TreeviewController < IssuesController
         sort = params[:sort].split ','
         case sort[0]
           when "status" then @tmp_issues = @tmp_issues.sort_by{|i| i.status.position}
-          when "status:desc" then @tmp_issues = @tmp_issues.sort_by{|i| i.status.position}.reverse 
+          when "status:desc" then @tmp_issues = @tmp_issues.sort_by{|i| i.status.position}.reverse
         end
       end
       @issues, @child_issues = [], []
@@ -389,14 +389,23 @@ class TreeviewController < IssuesController
     end
     render :layout => false if request.xhr?
   end
-  
+
   def split
-    @priorities = Enumeration.priorities
     support_tracker_id = Tracker.find_by_name("Support").id
-    @subtasks = @issue.children.select {|c| !c.closed? && c.tracker_id != support_tracker_id}
-    @split_feature = (params[:split_to] && params[:edit]) ? @project.issues.find(params[:split_to][:feature_id]) : Issue.new
-    @split_version = params[:split_to] ? Version.find(params[:split_to][:fixed_version_id]) : @issue.fixed_version
-    @split_features_list = @split_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
+
+    @priorities    = Enumeration.priorities
+    @subtasks      = @issue.children.select {|c| !c.closed? && c.tracker_id != support_tracker_id}
+    @split_feature = Issue.new
+    @split_version = @issue.fixed_version
+
+    if params[:split_to]
+      feature_id     = params[:split_to][:feature_id]
+      @split_feature = (!feature_id.blank? or params[:edit]) ? @project.issues.find(feature_id) : @split_feature
+      @split_version = (!feature_id.blank?) ? @split_feature.fixed_version : Version.find(params[:split_to][:fixed_version_id])
+    end
+
+    @split_features_list  = @split_version.fixed_issues.select {|issue| issue.feature? and !issue.id.eql?(@issue.id)}
+
     if params[:split_to]
       if params[:edit]
         # edit chosen feature
@@ -405,22 +414,25 @@ class TreeviewController < IssuesController
         else
           @split_feature = @split_features_list.first unless @split_features_list.include?(@split_feature)
         end
-        
+
       else
         # create new feature
-        feature = params[:split_to].merge({:tracker_id => 2})
-        @split_feature.project = @project
-        @split_feature.attributes = feature
-        @split_feature.predefined_tasks = feature['predefined_tasks']
-        @split_feature.author = User.current
-        default_status = IssueStatus.default
-        unless default_status
-          render_error 'No default issue status is defined. Please check your configuration (Go to "Administration -> Issue statuses").'
-          return
+        if feature_id.blank?
+          params[:split_to].delete(:feature_id)
+          feature = params[:split_to].merge({:tracker_id => 2})
+          @split_feature.project = @project
+          @split_feature.attributes = feature
+          @split_feature.predefined_tasks = feature['predefined_tasks']
+          @split_feature.author = User.current
+          default_status = IssueStatus.default
+          unless default_status
+            render_error 'No default issue status is defined. Please check your configuration (Go to "Administration -> Issue statuses").'
+            return
+          end
+          @split_feature.status = default_status
         end
-        @split_feature.status = default_status
-        
-        if @split_feature.save
+
+        if (@split_feature.new_record? and @split_feature.save) or !@split_feature.new_record?
           message = "\"<div id='notif' class='flash notice'>Issues have been split successfully.</div>\""
           @split_feature.predefined_tasks = nil
           if (transferred=params["transferred_subtasks"]) && !transferred.empty?
@@ -511,7 +523,7 @@ class TreeviewController < IssuesController
   def create_iteration
     @project = Project.find_by_identifier(params[:project_id])
     @issue = Issue.find(params[:id])
-    version = @project.versions.build(:name => params[:version], 
+    version = @project.versions.build(:name => params[:version],
                                       :state => 1,
                                       :version_type => 1)
     version.save
